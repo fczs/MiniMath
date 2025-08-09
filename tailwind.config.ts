@@ -1,0 +1,18 @@
+import type { Config } from 'tailwindcss';
+
+const config = {
+  darkMode: 'class',
+  theme: {
+    screens: {
+      xs: '576px',
+      sm: '768px',
+      md: '992px',
+      lg: '1200px',
+      xl: '1400px',
+    },
+    extend: {},
+  },
+  plugins: [],
+} satisfies Config;
+
+export default config;
