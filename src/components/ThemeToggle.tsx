@@ -1,71 +1,62 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { MoonIcon, SunIcon } from '@heroicons/react/24/solid';
+import styles from './ThemeToggle.module.scss';
 
-function getSystemPrefersDark(): boolean {
-  if (typeof window === 'undefined') return false;
-
-  return (
-    window.matchMedia &&
-    window.matchMedia('(prefers-color-scheme: dark)').matches
-  );
-}
+type Theme = 'light' | 'dark';
 
 export default function ThemeToggle() {
-  const [isDark, setIsDark] = useState(false);
+  const [theme, setTheme] = useState<Theme>('light');
+  const [mounted, setMounted] = useState(false);
 
-  // Initialize from localStorage or system preference
+  // Get initial theme from localStorage or system preference
   useEffect(() => {
-    const stored =
-      typeof window !== 'undefined'
-        ? window.localStorage.getItem('theme')
-        : null;
-    const initialDark = stored ? stored === 'dark' : getSystemPrefersDark();
+    const savedTheme = localStorage.getItem('theme') as Theme;
+    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches 
+      ? 'dark' 
+      : 'light';
+    
+    const initialTheme = savedTheme || systemTheme;
 
-    setIsDark(initialDark);
-    document.documentElement.classList.toggle('dark', initialDark);
+    setTheme(initialTheme);
+    applyTheme(initialTheme);
+    setMounted(true);
   }, []);
 
-  // Persist and apply class on change
-  useEffect(() => {
-    document.documentElement.classList.toggle('dark', isDark);
+  const applyTheme = (newTheme: Theme) => {
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+  };
 
-    if (typeof window !== 'undefined') {
-      window.localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    }
-  }, [isDark]);
+  const toggleTheme = () => {
+    const newTheme = theme === 'light' ? 'dark' : 'light';
 
-  // Listen to system preference changes and respect when user didn't explicitly choose
-  useEffect(() => {
-    const media = window.matchMedia('(prefers-color-scheme: dark)');
-    const onChange = () => {
-      const stored = window.localStorage.getItem('theme');
+    setTheme(newTheme);
+    applyTheme(newTheme);
+  };
 
-      if (!stored) {
-        setIsDark(media.matches);
-      }
-    };
-
-    media.addEventListener('change', onChange);
-
-    return () => media.removeEventListener('change', onChange);
-  }, []);
+  // Prevent hydration mismatch by not rendering until mounted
+  if (!mounted) {
+    return (
+      <button className={styles.toggle} aria-label="Toggle theme">
+        <span className={styles.icon}>🌙</span>
+      </button>
+    );
+  }
 
   return (
-    <button
+    <button 
+      className={styles.toggle}
+      onClick={toggleTheme}
+      aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
       type="button"
-      aria-pressed={isDark}
-      aria-label={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
-      onClick={() => setIsDark((v) => !v)}
-      className="h-11 min-h-11 w-11 min-w-11 xs:w-12 xs:h-12 inline-flex items-center justify-center rounded-full border border-black/10 dark:border-white/20 hover:bg-black/5 dark:hover:bg-white/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-foreground"
     >
-      <span className="sr-only">{isDark ? 'Light theme' : 'Dark theme'}</span>
-      {isDark ? (
-        <SunIcon className="h-5 w-5" aria-hidden />
-      ) : (
-        <MoonIcon className="h-5 w-5" aria-hidden />
-      )}
+      <span className={styles.icon} aria-hidden="true">
+        {theme === 'light' ? '🌙' : '☀️'}
+      </span>
+      <span className={styles.label}>
+        {theme === 'light' ? 'Dark' : 'Light'} mode
+      </span>
     </button>
   );
 }

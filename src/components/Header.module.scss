@@ -1,0 +1,108 @@
+@import '../styles/breakpoints';
+@import '../styles/tokens';
+
+.header {
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  z-index: $z-sticky;
+  backdrop-filter: blur(8px);
+  transition: all 0.2s ease;
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--spacing-4);
+  
+  @include respond(sm) {
+    padding: var(--spacing-4) var(--spacing-6);
+  }
+  
+  @include respond(lg) {
+    padding: var(--spacing-4) var(--spacing-8);
+  }
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  text-decoration: none;
+  color: var(--color-text-primary);
+  font-weight: $font-weight-bold;
+  font-size: $font-size-xl;
+  transition: all 0.2s ease;
+  border-radius: var(--radius-md);
+  padding: var(--spacing-2);
+  margin: calc(-1 * var(--spacing-2));
+  min-height: var(--touch-target-min);
+  
+  &:hover {
+    color: var(--color-primary-600);
+    text-decoration: none;
+    transform: translateY(-1px);
+    
+    [data-theme="dark"] & {
+      color: var(--color-primary-400);
+    }
+  }
+  
+  // Focus styles handled by globals.scss
+}
+
+.logoIcon {
+  font-size: $font-size-2xl;
+  line-height: 1;
+  transition: transform 0.2s ease;
+  
+  .logo:hover & {
+    transform: rotate(5deg) scale(1.05);
+  }
+}
+
+.logoText {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  background: linear-gradient(
+    135deg,
+    var(--color-primary-600),
+    var(--color-fun-purple),
+    var(--color-fun-pink)
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 200% 200%;
+  animation: gradient-shift 3s ease-in-out infinite;
+  
+  @include respond(sm) {
+    font-size: $font-size-2xl;
+  }
+  
+  [data-theme="dark"] & {
+    background: linear-gradient(
+      135deg,
+      var(--color-primary-400),
+      var(--color-fun-purple),
+      var(--color-fun-pink)
+    );
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 200% 200%;
+  }
+}
+
+@keyframes gradient-shift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}

@@ -1,0 +1,143 @@
+// Theme system with CSS variables
+
+:root {
+  // Light theme (default)
+  --color-primary-50: #eff6ff;
+  --color-primary-100: #dbeafe;
+  --color-primary-200: #bfdbfe;
+  --color-primary-300: #93c5fd;
+  --color-primary-400: #60a5fa;
+  --color-primary-500: #3b82f6;
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+  --color-primary-800: #1e40af;
+  --color-primary-900: #1e3a8a;
+
+  --color-success-50: #f0fdf4;
+  --color-success-100: #dcfce7;
+  --color-success-200: #bbf7d0;
+  --color-success-300: #86efac;
+  --color-success-400: #4ade80;
+  --color-success-500: #22c55e;
+  --color-success-600: #16a34a;
+  --color-success-700: #15803d;
+  --color-success-800: #166534;
+  --color-success-900: #14532d;
+
+  --color-error-50: #fef2f2;
+  --color-error-100: #fee2e2;
+  --color-error-200: #fecaca;
+  --color-error-300: #fca5a5;
+  --color-error-400: #f87171;
+  --color-error-500: #ef4444;
+  --color-error-600: #dc2626;
+  --color-error-700: #b91c1c;
+  --color-error-800: #991b1b;
+  --color-error-900: #7f1d1d;
+
+  --color-warning-50: #fffbeb;
+  --color-warning-100: #fef3c7;
+  --color-warning-200: #fde68a;
+  --color-warning-300: #fcd34d;
+  --color-warning-400: #fbbf24;
+  --color-warning-500: #f59e0b;
+  --color-warning-600: #d97706;
+  --color-warning-700: #b45309;
+  --color-warning-800: #92400e;
+  --color-warning-900: #78350f;
+
+  // Neutral colors
+  --color-gray-50: #f9fafb;
+  --color-gray-100: #f3f4f6;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #9ca3af;
+  --color-gray-500: #6b7280;
+  --color-gray-600: #4b5563;
+  --color-gray-700: #374151;
+  --color-gray-800: #1f2937;
+  --color-gray-900: #111827;
+
+  // Semantic colors (light theme)
+  --color-background: var(--color-gray-50);
+  --color-surface: #ffffff;
+  --color-surface-hover: var(--color-gray-100);
+  --color-border: var(--color-gray-200);
+  --color-border-hover: var(--color-gray-300);
+  
+  --color-text-primary: var(--color-gray-900);
+  --color-text-secondary: var(--color-gray-600);
+  --color-text-muted: var(--color-gray-500);
+  --color-text-on-primary: #ffffff;
+  
+  --color-focus: var(--color-primary-500);
+  --color-focus-ring: var(--color-primary-200);
+  
+  // Kid-friendly bright colors
+  --color-fun-purple: #8b5cf6;
+  --color-fun-pink: #ec4899;
+  --color-fun-orange: #f97316;
+  --color-fun-green: #10b981;
+  --color-fun-blue: #06b6d4;
+  --color-fun-yellow: #eab308;
+}
+
+[data-theme="dark"] {
+  // Dark theme overrides
+  --color-background: var(--color-gray-900);
+  --color-surface: var(--color-gray-800);
+  --color-surface-hover: var(--color-gray-700);
+  --color-border: var(--color-gray-700);
+  --color-border-hover: var(--color-gray-600);
+  
+  --color-text-primary: var(--color-gray-50);
+  --color-text-secondary: var(--color-gray-300);
+  --color-text-muted: var(--color-gray-400);
+  --color-text-on-primary: var(--color-gray-900);
+  
+  --color-focus: var(--color-primary-400);
+  --color-focus-ring: var(--color-primary-800);
+  
+  // Adjust kid-friendly colors for dark mode (slightly brighter)
+  --color-fun-purple: #a78bfa;
+  --color-fun-pink: #f472b6;
+  --color-fun-orange: #fb923c;
+  --color-fun-green: #34d399;
+  --color-fun-blue: #22d3ee;
+  --color-fun-yellow: #fbbf24;
+}
+
+// CSS custom properties for easy theming
+:root {
+  --font-family-primary: #{$font-family-primary};
+  --font-family-monospace: #{$font-family-monospace};
+  
+  --shadow-sm: #{$shadow-sm};
+  --shadow-base: #{$shadow-base};
+  --shadow-md: #{$shadow-md};
+  --shadow-lg: #{$shadow-lg};
+  --shadow-xl: #{$shadow-xl};
+  
+  --radius-sm: #{$radius-sm};
+  --radius-base: #{$radius-base};
+  --radius-md: #{$radius-md};
+  --radius-lg: #{$radius-lg};
+  --radius-xl: #{$radius-xl};
+  --radius-2xl: #{$radius-2xl};
+  
+  --spacing-1: #{$spacing-1};
+  --spacing-2: #{$spacing-2};
+  --spacing-3: #{$spacing-3};
+  --spacing-4: #{$spacing-4};
+  --spacing-5: #{$spacing-5};
+  --spacing-6: #{$spacing-6};
+  --spacing-8: #{$spacing-8};
+  --spacing-10: #{$spacing-10};
+  --spacing-12: #{$spacing-12};
+  --spacing-16: #{$spacing-16};
+  --spacing-20: #{$spacing-20};
+  
+  --touch-target-min: #{$touch-target-min};
+  --focus-ring-width: #{$focus-ring-width};
+  --focus-ring-offset: #{$focus-ring-offset};
+}

@@ -1,8 +1,9 @@
-- Use Next.js App Router, TypeScript, Tailwind (class-based dark mode).
-- Tailwind screens: xs=576, sm=768, md=992, lg=1200, xl=1400.
-- Pages: "/", "/play/[mode]".
-- Keep supportive tone in UI texts.
-- Accessibility: focus-visible, 44x44 targets, no color-only cues.
-- Do not add features beyond SPEC.md without asking.
-- All project texts and labels must be in English.
-- Use icons fron @heroicons/react.
+- Use Next.js App Router + TypeScript.
+- Styling: SCSS Modules. Global CSS only for tokens, breakpoints, theme, and resets.
+- Dark mode through data-theme="dark" on <html> with CSS variables.
+- Breakpoints: xs=576, sm=768, md=992, lg=1200, xl=1400.
+- Accessibility: keyboard navigation, :focus-visible, WCAG AA contrast, minimum touch targets 44×44 px.
+- Kids-first visuals: bright accessible palette, large controls, supportive copy.
+- Pages limited to /, /play/[mode], /results.
+- UI language: English (no i18n yet).
+- No third-party UI frameworks; keep dependencies minimal.

@@ -1,0 +1,218 @@
+@import '../styles/breakpoints';
+@import '../styles/tokens';
+
+.container {
+  padding: var(--spacing-8) var(--spacing-4);
+  max-width: 1200px;
+  margin: 0 auto;
+  
+  @include respond(sm) {
+    padding: var(--spacing-12) var(--spacing-6);
+  }
+  
+  @include respond(lg) {
+    padding: var(--spacing-16) var(--spacing-8);
+  }
+}
+
+.hero {
+  text-align: center;
+  margin-bottom: var(--spacing-16);
+  
+  @include respond(sm) {
+    margin-bottom: var(--spacing-20);
+  }
+}
+
+.title {
+  font-size: $font-size-3xl;
+  font-weight: $font-weight-bold;
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-4);
+  line-height: $line-height-tight;
+  
+  @include respond(sm) {
+    font-size: $font-size-4xl;
+  }
+  
+  @include respond(md) {
+    font-size: $font-size-5xl;
+  }
+}
+
+.titleAccent {
+  background: linear-gradient(
+    135deg,
+    var(--color-primary-600),
+    var(--color-fun-purple),
+    var(--color-fun-pink)
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 200% 200%;
+  animation: gradient-shift 3s ease-in-out infinite;
+  
+  [data-theme="dark"] & {
+    background: linear-gradient(
+      135deg,
+      var(--color-primary-400),
+      var(--color-fun-purple),
+      var(--color-fun-pink)
+    );
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 200% 200%;
+  }
+}
+
+.subtitle {
+  font-size: $font-size-lg;
+  color: var(--color-text-secondary);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: $line-height-normal;
+  
+  @include respond(sm) {
+    font-size: $font-size-xl;
+  }
+}
+
+.modesSection {
+  margin-bottom: var(--spacing-16);
+}
+
+.modesTitle {
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-bold;
+  color: var(--color-text-primary);
+  text-align: center;
+  margin-bottom: var(--spacing-8);
+  
+  @include respond(sm) {
+    font-size: $font-size-3xl;
+    margin-bottom: var(--spacing-12);
+  }
+}
+
+.modesGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-6);
+  
+  @include respond(sm) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  @include respond(md) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  @include respond(xl) {
+    gap: var(--spacing-8);
+  }
+}
+
+.modeCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--spacing-8) var(--spacing-6);
+  background-color: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  text-decoration: none;
+  color: var(--color-text-primary);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  min-height: 200px;
+  
+  // Minimum touch target size
+  @media (pointer: coarse) {
+    min-height: calc(var(--touch-target-min) * 2);
+  }
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--card-color, var(--color-primary-500));
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    transition: height 0.3s ease;
+  }
+  
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--card-color, var(--color-primary-500));
+    
+    &::before {
+      height: 8px;
+    }
+    
+    .modeIcon {
+      transform: scale(1.1) rotate(5deg);
+    }
+  }
+  
+  &:active {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+  
+  // Focus styles handled by globals.scss
+}
+
+.modeIcon {
+  font-size: 3rem;
+  margin-bottom: var(--spacing-4);
+  transition: transform 0.3s ease;
+  line-height: 1;
+  
+  @include respond(sm) {
+    font-size: 3.5rem;
+  }
+}
+
+.modeIconBright {
+  [data-theme="dark"] & {
+    filter: brightness(3) contrast(0.9);
+  }
+}
+
+.modeName {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-2);
+  text-align: center;
+  
+  @include respond(sm) {
+    font-size: $font-size-2xl;
+  }
+}
+
+.modeDescription {
+  font-size: $font-size-base;
+  color: var(--color-text-secondary);
+  text-align: center;
+  line-height: $line-height-normal;
+  
+  @include respond(sm) {
+    font-size: $font-size-lg;
+  }
+}
+
+@keyframes gradient-shift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
