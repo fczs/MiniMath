@@ -1,0 +1,127 @@
+@import '../../styles/breakpoints';
+@import '../../styles/tokens';
+
+.banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-4) var(--spacing-6);
+  border-radius: var(--radius-lg);
+  border: 2px solid;
+  font-weight: $font-weight-medium;
+  animation: slideIn 0.3s ease-out;
+  min-height: 60px;
+  
+  @include respond(sm) {
+    padding: var(--spacing-5) var(--spacing-8);
+    min-height: 70px;
+  }
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  text-align: center;
+  
+  @include respond(sm) {
+    gap: var(--spacing-4);
+  }
+}
+
+.icon {
+  font-size: $font-size-xl;
+  line-height: 1;
+  
+  @include respond(sm) {
+    font-size: $font-size-2xl;
+  }
+}
+
+.message {
+  font-size: $font-size-base;
+  line-height: $line-height-normal;
+  
+  @include respond(sm) {
+    font-size: $font-size-lg;
+  }
+}
+
+// Success state (correct answer)
+.success {
+  background-color: var(--color-success-50);
+  border-color: var(--color-success-300);
+  color: var(--color-success-800);
+  
+  [data-theme="dark"] & {
+    background-color: var(--color-success-900);
+    border-color: var(--color-success-700);
+    color: var(--color-success-100);
+  }
+}
+
+// Warning state (incorrect/retry)
+.warning {
+  background-color: var(--color-warning-50);
+  border-color: var(--color-warning-300);
+  color: var(--color-warning-800);
+  
+  [data-theme="dark"] & {
+    background-color: var(--color-warning-900);
+    border-color: var(--color-warning-700);
+    color: var(--color-warning-100);
+  }
+}
+
+// Info state (revealed answer)
+.info {
+  background-color: var(--color-primary-50);
+  border-color: var(--color-primary-300);
+  color: var(--color-primary-800);
+  
+  [data-theme="dark"] & {
+    background-color: var(--color-primary-900);
+    border-color: var(--color-primary-700);
+    color: var(--color-primary-100);
+  }
+}
+
+// Default state
+.default {
+  background-color: var(--color-gray-50);
+  border-color: var(--color-gray-300);
+  color: var(--color-gray-800);
+  
+  [data-theme="dark"] & {
+    background-color: var(--color-gray-900);
+    border-color: var(--color-gray-700);
+    color: var(--color-gray-100);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Respect reduced motion preference
+@media (prefers-reduced-motion: reduce) {
+  .banner {
+    animation: none;
+  }
+  
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}

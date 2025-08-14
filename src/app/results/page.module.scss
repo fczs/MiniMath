@@ -325,3 +325,127 @@
   max-width: 600px;
   margin: 0 auto;
 }
+
+// Loading and No Data States
+.loading,
+.noData {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 60vh;
+  gap: var(--spacing-6);
+}
+
+.loadingIcon,
+.noDataIcon {
+  font-size: 4rem;
+  
+  @include respond(sm) {
+    font-size: 5rem;
+  }
+}
+
+.noDataTitle {
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-bold;
+  color: var(--color-text-primary);
+  margin: 0;
+  
+  @include respond(sm) {
+    font-size: $font-size-3xl;
+  }
+}
+
+.noDataText {
+  font-size: $font-size-base;
+  color: var(--color-text-secondary);
+  line-height: $line-height-normal;
+  max-width: 500px;
+  
+  @include respond(sm) {
+    font-size: $font-size-lg;
+  }
+}
+
+// Mistakes Section
+.mistakesCard {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  
+  @include respond(sm) {
+    padding: var(--spacing-8);
+    gap: var(--spacing-6);
+  }
+}
+
+.mistakeItem {
+  padding: var(--spacing-4);
+  border: 1px solid var(--color-error-200);
+  border-radius: var(--radius-md);
+  background-color: var(--color-error-50);
+  
+  [data-theme="dark"] & {
+    border-color: var(--color-error-700);
+    background-color: var(--color-error-900);
+  }
+  
+  @include respond(sm) {
+    padding: var(--spacing-6);
+  }
+}
+
+.mistakePrompt {
+  font-family: var(--font-family-monospace);
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  color: var(--color-text-primary);
+  text-align: center;
+  margin-bottom: var(--spacing-4);
+  
+  @include respond(sm) {
+    font-size: $font-size-xl;
+  }
+}
+
+.mistakeAnswers {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--spacing-4);
+  
+  @include respond-down(sm) {
+    flex-direction: column;
+    gap: var(--spacing-3);
+  }
+}
+
+.mistakeAnswer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-1);
+  text-align: center;
+}
+
+.mistakeLabel {
+  font-size: $font-size-sm;
+  color: var(--color-text-secondary);
+  font-weight: $font-weight-medium;
+}
+
+.mistakeValue {
+  font-family: var(--font-family-monospace);
+  font-size: $font-size-base;
+  font-weight: $font-weight-bold;
+  color: var(--color-text-primary);
+  
+  @include respond(sm) {
+    font-size: $font-size-lg;
+  }
+}

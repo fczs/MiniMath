@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import AdditionGame from './AdditionGame';
 import styles from './page.module.scss';
 
 interface PageProps {
@@ -58,6 +59,12 @@ export default async function PlayPage({ params }: PageProps) {
   
   const currentMode = modeInfo[mode as keyof typeof modeInfo];
 
+  // For addition mode, render the full game
+  if (mode === 'addition') {
+    return <AdditionGame />;
+  }
+
+  // For other modes, show placeholder
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -71,7 +78,9 @@ export default async function PlayPage({ params }: PageProps) {
           style={{ '--mode-color': currentMode.color } as React.CSSProperties}
         >
           <div className={styles.modeIcon} aria-hidden="true">
-            {currentMode.icon}
+            <div className={['addition', 'subtraction', 'multiplication', 'division'].includes(mode) ? styles.modeIconBright : ''}>
+              {currentMode.icon}
+            </div>
           </div>
           <div>
             <h1 className={styles.modeTitle}>

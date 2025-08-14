@@ -1,0 +1,123 @@
+@import '../../styles/breakpoints';
+@import '../../styles/tokens';
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
+  padding: var(--spacing-6);
+  background-color: var(--color-surface);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border);
+  
+  @include respond(sm) {
+    padding: var(--spacing-8);
+    gap: var(--spacing-8);
+  }
+}
+
+.progress {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.progressText {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: var(--color-text-secondary);
+  text-align: center;
+  
+  @include respond(sm) {
+    font-size: $font-size-base;
+  }
+}
+
+.progressBar {
+  height: 8px;
+  background-color: var(--color-gray-200);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  
+  [data-theme="dark"] & {
+    background-color: var(--color-gray-700);
+  }
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-primary-500), var(--color-primary-600));
+  border-radius: var(--radius-full);
+  transition: width 0.3s ease;
+}
+
+.problemContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-4);
+  text-align: center;
+}
+
+.prompt {
+  font-family: var(--font-family-monospace);
+  font-size: 2.5rem;
+  font-weight: $font-weight-bold;
+  color: var(--color-text-primary);
+  line-height: $line-height-tight;
+  letter-spacing: 0.05em;
+  padding: var(--spacing-4) var(--spacing-6);
+  background-color: var(--color-background);
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--color-border);
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  @include respond(sm) {
+    font-size: 3rem;
+    padding: var(--spacing-6) var(--spacing-8);
+    min-height: 100px;
+  }
+  
+  @include respond(md) {
+    font-size: 3.5rem;
+    min-height: 120px;
+  }
+}
+
+.metadata {
+  display: flex;
+  gap: var(--spacing-4);
+  align-items: center;
+}
+
+.mode,
+.level {
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  padding: var(--spacing-1) var(--spacing-2);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-gray-100);
+  color: var(--color-text-secondary);
+  
+  @include respond(sm) {
+    font-size: $font-size-sm;
+    padding: var(--spacing-2) var(--spacing-3);
+  }
+  
+  [data-theme="dark"] & {
+    background-color: var(--color-gray-800);
+  }
+}
+
+.mode {
+  background-color: var(--color-primary-100);
+  color: var(--color-primary-700);
+  
+  [data-theme="dark"] & {
+    background-color: var(--color-primary-900);
+    color: var(--color-primary-300);
+  }
+}
