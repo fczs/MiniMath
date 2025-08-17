@@ -2,13 +2,14 @@
 @import '../../styles/tokens';
 
 .container {
+  background-color: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-6);
   display: flex;
   flex-direction: column;
   gap: var(--spacing-6);
-  padding: var(--spacing-6);
-  background-color: var(--color-surface);
-  border-radius: var(--radius-xl);
-  border: 1px solid var(--color-border);
+  position: relative;
   
   @include respond(sm) {
     padding: var(--spacing-8);
@@ -19,14 +20,20 @@
 .progress {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-3);
+  gap: var(--spacing-4);
+  min-width: 0;
+}
+
+.progressHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .progressText {
   font-size: $font-size-sm;
   font-weight: $font-weight-medium;
   color: var(--color-text-secondary);
-  text-align: center;
   
   @include respond(sm) {
     font-size: $font-size-base;
@@ -46,54 +53,19 @@
 
 .progressFill {
   height: 100%;
-  background: linear-gradient(90deg, var(--color-primary-500), var(--color-primary-600));
+  background: linear-gradient(90deg, var(--color-primary-400), var(--color-primary-600));
   border-radius: var(--radius-full);
   transition: width 0.3s ease;
 }
 
-.problemContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--spacing-4);
-  text-align: center;
-}
-
-.prompt {
-  font-family: var(--font-family-monospace);
-  font-size: 2.5rem;
-  font-weight: $font-weight-bold;
-  color: var(--color-text-primary);
-  line-height: $line-height-tight;
-  letter-spacing: 0.05em;
-  padding: var(--spacing-4) var(--spacing-6);
-  background-color: var(--color-background);
-  border-radius: var(--radius-lg);
-  border: 2px solid var(--color-border);
-  min-height: 80px;
+.metadata {
   display: flex;
   align-items: center;
   justify-content: center;
-  
-  @include respond(sm) {
-    font-size: 3rem;
-    padding: var(--spacing-6) var(--spacing-8);
-    min-height: 100px;
-  }
-  
-  @include respond(md) {
-    font-size: 3.5rem;
-    min-height: 120px;
-  }
+  gap: var(--spacing-3);
+  flex-wrap: wrap;
 }
 
-.metadata {
-  display: flex;
-  gap: var(--spacing-4);
-  align-items: center;
-}
-
-.mode,
 .level {
   font-size: $font-size-xs;
   font-weight: $font-weight-medium;
@@ -120,4 +92,164 @@
     background-color: var(--color-primary-900);
     color: var(--color-primary-300);
   }
+}
+
+// Action buttons
+.actionButtons {
+  flex-shrink: 0;
+}
+
+.actionButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-2) var(--spacing-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: var(--touch-target-min);
+  
+  &:hover {
+    background-color: var(--color-surface-hover);
+    border-color: var(--color-border-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+  }
+  
+  &:active {
+    transform: translateY(0);
+    box-shadow: none;
+  }
+}
+
+.nextButton {
+  background: linear-gradient(135deg, var(--color-success-100), var(--color-success-200));
+  border-color: var(--color-success-300);
+  color: var(--color-success-700);
+  
+  [data-theme="dark"] & {
+    background: linear-gradient(135deg, var(--color-success-900), var(--color-success-800));
+    border-color: var(--color-success-700);
+    color: var(--color-success-300);
+  }
+  
+  &:hover {
+    background: linear-gradient(135deg, var(--color-success-200), var(--color-success-300));
+    
+    [data-theme="dark"] & {
+      background: linear-gradient(135deg, var(--color-success-800), var(--color-success-700));
+    }
+  }
+}
+
+.skipButton {
+  background-color: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text-secondary);
+  
+  &:hover {
+    background-color: var(--color-surface-hover);
+    border-color: var(--color-border-hover);
+    color: var(--color-text-primary);
+  }
+}
+
+.buttonIcon {
+  font-size: $font-size-sm;
+  line-height: 1;
+}
+
+.prompt {
+  font-family: var(--font-family-monospace);
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-bold;
+  text-align: center;
+  color: var(--color-text-primary);
+  
+  @include respond(sm) {
+    font-size: $font-size-4xl;
+  }
+}
+
+.inputModeToggle {
+  position: absolute;
+  bottom: var(--spacing-4);
+  right: var(--spacing-4);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  background-color: var(--color-surface);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-3);
+  
+  @include respond(sm) {
+    bottom: var(--spacing-6);
+    right: var(--spacing-6);
+  }
+}
+
+.toggleLabel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.toggleInput {
+  display: none;
+}
+
+.toggleOption {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  font-size: $font-size-base;
+}
+
+.toggleSwitch {
+  position: relative;
+  margin: 0 var(--spacing-1);
+}
+
+.switchLabel {
+  display: block;
+  width: 48px;
+  height: 24px;
+  background-color: var(--color-gray-200);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  position: relative;
+  
+  [data-theme="dark"] & {
+    background-color: var(--color-gray-700);
+  }
+}
+
+.toggleInput:checked + .switchLabel {
+  background-color: var(--color-primary-500);
+}
+
+.switchHandle {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  background-color: white;
+  border-radius: 50%;
+  transition: transform 0.2s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.toggleInput:checked + .switchLabel .switchHandle {
+  transform: translateX(24px);
 }

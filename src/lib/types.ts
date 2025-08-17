@@ -57,6 +57,7 @@ export interface GameState {
     type: 'correct' | 'incorrect' | 'retry' | 'revealed' | null;
     message: string;
   };
+  generator: Generator | null;
 }
 
 export type GameAction = 

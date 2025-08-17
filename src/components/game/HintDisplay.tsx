@@ -48,7 +48,7 @@ function EmojiTilesHint({ operands }: { operands: number[] }) {
         
         {/* Total */}
         <div className={styles.tilesGroup}>
-          <div className={styles.tilesGroupLabel}>{a + b}</div>
+          <div className={styles.tilesGroupLabel}>?</div>
           <div className={styles.tiles}>
             {Array.from({ length: a }, (_, i) => (
               <span key={`total-a-${i}`} className={styles.tile}>
@@ -62,49 +62,7 @@ function EmojiTilesHint({ operands }: { operands: number[] }) {
             ))}
           </div>
         </div>
-      </div>
-    </div>
-  );
-}
 
-// Number line hint component
-function NumberLineHint({ operands }: { operands: number[] }) {
-  const [a, b] = operands;
-  const start = 0;
-  const end = Math.max(20, a + b + 2); // Show enough range
-  const answer = a + b;
-  
-  return (
-    <div className={styles.numberLine}>
-      <div className={styles.numberLineTitle}>Follow the number line:</div>
-      
-      <div className={styles.lineContainer}>
-        <div className={styles.line}>
-          {Array.from({ length: end - start + 1 }, (_, i) => {
-            const num = start + i;
-            const isStart = num === a;
-            const isEnd = num === answer;
-            const isOnPath = num >= a && num <= answer;
-            
-            return (
-              <div 
-                key={num}
-                className={`${styles.numberPoint} ${
-                  isStart ? styles.start : ''
-                } ${isEnd ? styles.end : ''} ${
-                  isOnPath ? styles.onPath : ''
-                }`}
-              >
-                <div className={styles.numberLabel}>{num}</div>
-                <div className={styles.point} />
-              </div>
-            );
-          })}
-        </div>
-        
-        <div className={styles.instruction}>
-          Start at {a}, then jump {b} steps forward to reach {answer}!
-        </div>
       </div>
     </div>
   );
@@ -124,7 +82,6 @@ export default function HintDisplay({ problem, show }: HintDisplayProps) {
       
       <div className={styles.hints}>
         <EmojiTilesHint operands={problem.operands} />
-        <NumberLineHint operands={problem.operands} />
       </div>
     </div>
   );

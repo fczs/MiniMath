@@ -1,21 +1,21 @@
 import { Generator, Problem, Level } from '../types';
 
 export class AdditionGenerator implements Generator {
-  private lastProblem: Problem | null = null;
-  private zeroZeroCount = 0;
-  private readonly maxZeroZero = 1;
+  private usedProblems: Set<string> = new Set();
+  private zeroExampleUsed = false;
 
   next(level: Level): Problem {
     let operands: number[];
     let attempts = 0;
-    const maxAttempts = 100; // Prevent infinite loops
+    const maxAttempts = 1000; // Increase attempts to handle constraints
 
     do {
       operands = this.generateOperands(level);
       attempts++;
       
       if (attempts >= maxAttempts) {
-        // Fallback to prevent infinite loop
+        // Fallback: generate a simple, guaranteed unique problem
+        operands = this.generateFallbackOperands(level);
         break;
       }
     } while (this.shouldReject(operands));
@@ -36,10 +36,13 @@ export class AdditionGenerator implements Generator {
     };
 
     // Update tracking
-    if (operands[0] === 0 && operands[1] === 0) {
-      this.zeroZeroCount++;
+    const problemKey = this.getProblemKey(operands);
+
+    this.usedProblems.add(problemKey);
+    
+    if (operands[0] === 0 || operands[1] === 0) {
+      this.zeroExampleUsed = true;
     }
-    this.lastProblem = problem;
 
     return problem;
   }
@@ -80,27 +83,45 @@ export class AdditionGenerator implements Generator {
   }
 
   private shouldReject(operands: number[]): boolean {
-    // Avoid exact same pair as last problem
-    if (this.lastProblem && this.operandsEqual(operands, this.lastProblem.operands)) {
+    // Never allow 0 + 0
+    if (operands[0] === 0 && operands[1] === 0) {
       return true;
     }
 
-    // Limit 0 + 0 occurrences
-    if (operands[0] === 0 && operands[1] === 0 && this.zeroZeroCount >= this.maxZeroZero) {
+    // Check if this problem was already used in session
+    const problemKey = this.getProblemKey(operands);
+
+    if (this.usedProblems.has(problemKey)) {
+      return true;
+    }
+
+    // Limit examples with zero to maximum one per session
+    if ((operands[0] === 0 || operands[1] === 0) && this.zeroExampleUsed) {
       return true;
     }
 
     return false;
   }
 
-  private operandsEqual(a: number[], b: number[]): boolean {
-    if (a.length !== b.length) return false;
-    
-    // Check both orders since addition is commutative
-    const aMatches = a.every((val, idx) => val === b[idx]);
-    const bMatches = a.every((val, idx) => val === b[b.length - 1 - idx]);
-    
-    return aMatches || bMatches;
+  private getProblemKey(operands: number[]): string {
+    // Sort operands to handle commutativity (3+5 = 5+3)
+    const sorted = [...operands].sort((a, b) => a - b);
+
+    return sorted.join('+');
+  }
+
+  private generateFallbackOperands(level: Level): number[] {
+    // Generate a simple, safe fallback that's likely not used
+    switch (level) {
+      case 1:
+        return [1, 1]; // Simple fallback for level 1
+      case 2:
+        return [11, 11]; // Simple fallback for level 2
+      case 3:
+        return [111, 111]; // Simple fallback for level 3
+      default:
+        return [1, 1];
+    }
   }
 
   private generateId(): string {
@@ -109,7 +130,7 @@ export class AdditionGenerator implements Generator {
 
   // Reset state for new session
   reset(): void {
-    this.lastProblem = null;
-    this.zeroZeroCount = 0;
+    this.usedProblems.clear();
+    this.zeroExampleUsed = false;
   }
 }

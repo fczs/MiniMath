@@ -26,6 +26,7 @@ const createInitialState = (): GameState => ({
     type: null,
     message: '',
   },
+  generator: null,
 });
 
 // Feedback messages
@@ -120,6 +121,7 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
         ...createInitialState(),
         level,
         mode,
+        generator,
         currentProblem,
         nextProblem,
         problems: [currentProblem],
@@ -154,14 +156,14 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
       } else {
         // Wrong answer
         if (currentAttempt < MAX_ATTEMPTS) {
-          // First wrong attempt - allow retry
+          // First wrong attempt - allow continuing (hint button will appear for Level 1)
           return {
             ...state,
             currentAttempt: currentAttempt + 1,
-            showHint: state.level === 1, // Enable hint for Level 1
+            showHint: false, // Don't auto-show hint, let user click button
             feedback: {
-              type: 'retry',
-              message: getFeedbackMessage('retry'),
+              type: 'incorrect',
+              message: getFeedbackMessage('incorrect'),
             },
           };
         } else {
@@ -205,7 +207,7 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
     }
     
     case 'NEXT_PROBLEM': {
-      const { nextProblem, currentIndex, level, mode, results } = state;
+      const { nextProblem, currentIndex, level, generator, results } = state;
       
       if (currentIndex + 1 >= TOTAL_PROBLEMS) {
         // Session complete
@@ -226,8 +228,11 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
         };
       }
       
-      // Generate next problem
-      const generator = getGenerator(mode);
+      // Generate next problem using existing generator
+      if (!generator) {
+        throw new Error('Generator not found in state');
+      }
+      
       const newNextProblem = generator.next(level);
       
       return {

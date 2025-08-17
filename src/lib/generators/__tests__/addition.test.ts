@@ -95,47 +95,89 @@ describe('AdditionGenerator', () => {
     });
   });
 
-  describe('Duplicate avoidance', () => {
-    it('should avoid immediate duplicates', () => {
-      generator.reset();
-      const problem1 = generator.next(1);
-      const problem2 = generator.next(1);
+  describe('Game logic constraints', () => {
+    it('should never generate 0 + 0', () => {
+      const problems = [];
       
-      // Should not be the exact same operands (considering commutativity)
-      const ops1 = problem1.operands.sort();
-      const ops2 = problem2.operands.sort();
-      
-      expect(ops1).not.toEqual(ops2);
+      // Generate many problems to test the restriction
+      for (let i = 0; i < 100; i++) {
+        const problem = generator.next(1);
+
+        problems.push(problem);
+      }
+
+      const zeroZeroProblems = problems.filter(p => 
+        p.operands[0] === 0 && p.operands[1] === 0
+      );
+
+      expect(zeroZeroProblems.length).toBe(0);
     });
 
-    it('should limit 0 + 0 to maximum once per session', () => {
-      generator.reset();
-      let zeroZeroCount = 0;
+    it('should have at most one example with zero per session', () => {
+      const problems = [];
       
-      // Generate many problems to test the limit
+      // Generate many problems to test the restriction
       for (let i = 0; i < 50; i++) {
         const problem = generator.next(1);
 
-        if (problem.operands[0] === 0 && problem.operands[1] === 0) {
-          zeroZeroCount++;
-        }
+        problems.push(problem);
       }
+
+      const zeroProblems = problems.filter(p => 
+        p.operands[0] === 0 || p.operands[1] === 0
+      );
+
+      expect(zeroProblems.length).toBeLessThanOrEqual(1);
+    });
+
+    it('should not repeat problems in a session', () => {
+      const problems = [];
+      const problemKeys = new Set<string>();
       
-      expect(zeroZeroCount).toBeLessThanOrEqual(1);
+      // Generate multiple problems
+      for (let i = 0; i < 20; i++) {
+        const problem = generator.next(1);
+
+        problems.push(problem);
+        
+        // Create key for uniqueness check (handle commutativity)
+        const sorted = [...problem.operands].sort((a, b) => a - b);
+        const key = sorted.join('+');
+        
+        expect(problemKeys.has(key)).toBe(false);
+        problemKeys.add(key);
+      }
     });
   });
 
   describe('Reset functionality', () => {
-    it('should reset state when reset() is called', () => {
-      // Generate some problems to change state
-      generator.next(1);
-      generator.next(1);
+    it('should reset state properly', () => {
+      // Generate a problem with zero
+      let problem;
+      let attempts = 0;
+
+      do {
+        problem = generator.next(1);
+        attempts++;
+      } while ((problem.operands[0] !== 0 && problem.operands[1] !== 0) && attempts < 100);
       
-      // Reset and verify we can generate 0 + 0 again if it comes up
+      // Now zero examples should be blocked
+      // Reset and try again
       generator.reset();
       
-      // This is a probabilistic test, but we can at least ensure reset doesn't throw
-      expect(() => generator.reset()).not.toThrow();
+      // Should be able to generate zero examples again after reset
+      let foundZero = false;
+
+      for (let i = 0; i < 50; i++) {
+        const newProblem = generator.next(1);
+
+        if (newProblem.operands[0] === 0 || newProblem.operands[1] === 0) {
+          foundZero = true;
+          break;
+        }
+      }
+      
+      expect(foundZero).toBe(true);
     });
   });
 

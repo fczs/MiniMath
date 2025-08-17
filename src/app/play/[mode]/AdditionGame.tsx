@@ -10,10 +10,23 @@ import AnswerInput from '@/components/game/AnswerInput';
 import Keypad from '@/components/game/Keypad';
 import FeedbackBanner from '@/components/game/FeedbackBanner';
 import HintDisplay from '@/components/game/HintDisplay';
-import GameControls from '@/components/game/GameControls';
+import Modal from '@/components/ui/Modal';
 import styles from './AdditionGame.module.scss';
 
 type GamePhase = 'setup' | 'playing' | 'complete';
+
+const getLevelName = (level: Level): string => {
+  switch (level) {
+    case 1:
+      return 'Beginner';
+    case 2:
+      return 'Intermediate';
+    case 3:
+      return 'Advanced';
+    default:
+      return 'Level';
+  }
+};
 
 export default function AdditionGame() {
   const router = useRouter();
@@ -22,6 +35,7 @@ export default function AdditionGame() {
   const [selectedLevel, setSelectedLevel] = useState<Level>(1);
   const [inputValue, setInputValue] = useState('');
   const [useKeypad, setUseKeypad] = useState(true);
+  const [isHintModalOpen, setIsHintModalOpen] = useState(false);
 
   // Handle game completion
   useEffect(() => {
@@ -43,6 +57,7 @@ export default function AdditionGame() {
   const handleSubmitAnswer = (answer: number | null) => {
     actions.submitAnswer(answer);
     setInputValue('');
+    // Don't close modal on submit - let user see feedback first
   };
 
   const handleKeypadNumber = (digit: string) => {
@@ -62,20 +77,22 @@ export default function AdditionGame() {
   const handleNextProblem = () => {
     actions.nextProblem();
     setInputValue('');
+    setIsHintModalOpen(false);
   };
 
   const handleSkipProblem = () => {
     actions.skipProblem();
     setInputValue('');
+    setIsHintModalOpen(false);
   };
 
   const handleShowHint = () => {
+    setIsHintModalOpen(true);
     actions.showHint();
   };
 
-  const handleRetryProblem = () => {
-    actions.retryProblem();
-    setInputValue('');
+  const handleCloseHint = () => {
+    setIsHintModalOpen(false);
   };
 
   // Setup phase - level selection
@@ -89,18 +106,18 @@ export default function AdditionGame() {
           </Link>
           
           <div className={styles.modeInfo}>
-            <div className={styles.modeIcon} aria-hidden="true">
-              <div className={styles.modeIconBright}>
-                ➕
-              </div>
-            </div>
-            <div>
+            <div className={styles.titleContainer}>
               <h1 className={styles.modeTitle}>
                 Addition Game
               </h1>
               <p className={styles.modeDescription}>
                 Put numbers together to find the sum!
               </p>
+            </div>
+            <div className={styles.modeIcon} aria-hidden="true">
+              <div className={styles.modeIconBright}>
+                ➕
+              </div>
             </div>
           </div>
         </div>
@@ -154,19 +171,7 @@ export default function AdditionGame() {
             </button>
           </div>
           
-          <div className={styles.inputToggle}>
-            <label className={styles.toggleLabel}>
-              <input
-                type="checkbox"
-                checked={useKeypad}
-                onChange={(e) => setUseKeypad(e.target.checked)}
-                className={styles.toggleInput}
-              />
-              <span className={styles.toggleText}>
-                Use on-screen keypad
-              </span>
-            </label>
-          </div>
+
         </div>
       </div>
     );
@@ -207,6 +212,8 @@ export default function AdditionGame() {
 
   // Playing phase
   const showFeedback = Boolean(state.feedback.type && state.feedback.message);
+  const isInputDisabled = showFeedback && state.feedback.type !== 'incorrect';
+  const canShowHint = state.level === 1 && state.currentAttempt > 1;
 
   return (
     <div className={styles.container}>
@@ -217,68 +224,83 @@ export default function AdditionGame() {
         </Link>
         
         <div className={styles.modeInfo}>
+          <div className={styles.titleContainer}>
+            <h1 className={styles.modeTitle}>
+              Addition Game<br />{getLevelName(selectedLevel)}
+            </h1>
+          </div>
           <div className={styles.modeIcon} aria-hidden="true">
             <div className={styles.modeIconBright}>
               ➕
             </div>
           </div>
-          <div>
-            <h1 className={styles.modeTitle}>
-              Addition Game - Level {selectedLevel}
-            </h1>
-          </div>
         </div>
       </div>
 
-      <div className={styles.gameArea}>
+      <div className={`${styles.gameArea} ${useKeypad ? styles.keypadLayout : styles.inputLayout}`}>
         {state.currentProblem && (
           <>
-            <ProblemView
+            <div className={styles.leftColumn}>
+                          <ProblemView
               problem={state.currentProblem}
               currentIndex={state.currentIndex}
               totalProblems={state.totalProblems}
-            />
-            
-            <FeedbackBanner
-              feedback={state.feedback}
-              show={showFeedback}
-            />
-            
-            {state.showHint && (
-              <HintDisplay
-                problem={state.currentProblem}
-                show={state.showHint}
-              />
-            )}
-            
-            <div className={styles.inputSection}>
-              {useKeypad ? (
-                <Keypad
-                  value={inputValue}
-                  onNumberInput={handleKeypadNumber}
-                  onBackspace={handleKeypadBackspace}
-                  onSubmit={handleKeypadSubmit}
-                  disabled={showFeedback}
-                />
-              ) : (
-                <AnswerInput
-                  onSubmit={handleSubmitAnswer}
-                  disabled={showFeedback}
-                  autoFocus={!showFeedback}
-                />
-              )}
-            </div>
-            
-            <GameControls
               gameState={state}
               onNext={handleNextProblem}
               onSkip={handleSkipProblem}
-              onShowHint={handleShowHint}
-              onRetry={handleRetryProblem}
+              useKeypad={useKeypad}
+              onToggleInputMode={setUseKeypad}
             />
+              
+              <FeedbackBanner
+                feedback={state.feedback}
+                show={showFeedback}
+              />
+              
+              {!useKeypad && (
+                <div className={styles.inputSection}>
+                  <AnswerInput
+                    onSubmit={handleSubmitAnswer}
+                    disabled={isInputDisabled}
+                    autoFocus={!isInputDisabled}
+                    onShowHint={handleShowHint}
+                    canShowHint={canShowHint}
+                  />
+                </div>
+              )}
+            </div>
+            
+            {useKeypad && (
+              <div className={styles.rightColumn}>
+                <div className={styles.inputSection}>
+                  <Keypad
+                    value={inputValue}
+                    onNumberInput={handleKeypadNumber}
+                    onBackspace={handleKeypadBackspace}
+                    onSubmit={handleKeypadSubmit}
+                    onShowHint={handleShowHint}
+                    disabled={isInputDisabled}
+                    canShowHint={canShowHint}
+                  />
+                </div>
+              </div>
+            )}
           </>
         )}
       </div>
+
+      {/* Hint Modal */}
+      <Modal
+        isOpen={isHintModalOpen}
+        onClose={handleCloseHint}
+      >
+        {state.currentProblem && (
+          <HintDisplay
+            problem={state.currentProblem}
+            show={true}
+          />
+        )}
+      </Modal>
     </div>
   );
 }

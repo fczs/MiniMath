@@ -8,13 +8,17 @@ interface AnswerInputProps {
   disabled?: boolean;
   placeholder?: string;
   autoFocus?: boolean;
+  onShowHint?: () => void;
+  canShowHint?: boolean;
 }
 
 export default function AnswerInput({ 
   onSubmit, 
   disabled = false, 
   placeholder = "Your answer",
-  autoFocus = true 
+  autoFocus = true,
+  onShowHint,
+  canShowHint = false
 }: AnswerInputProps) {
   const [value, setValue] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
@@ -63,11 +67,11 @@ export default function AnswerInput({
 
   return (
     <div className={styles.container}>
-      <label htmlFor="answer-input" className={styles.label}>
-        Your Answer
-      </label>
-      
-      <div className={styles.inputContainer}>
+      <div className={styles.inputGroup}>
+        <label htmlFor="answer-input" className={styles.label}>
+          Your Answer
+        </label>
+        
         <input
           ref={inputRef}
           id="answer-input"
@@ -84,19 +88,33 @@ export default function AnswerInput({
           spellCheck="false"
         />
         
+        <div className={styles.hint}>
+          Press Enter or tap ✓ to submit
+        </div>
+      </div>
+      
+      <div className={styles.buttonsContainer}>
         <button
           type="button"
           onClick={handleSubmit}
-          disabled={disabled}
+          disabled={disabled || value.trim() === ''}
           className={styles.submitButton}
           aria-label="Submit answer"
         >
           <span className={styles.submitIcon}>✓</span>
         </button>
-      </div>
-      
-      <div className={styles.hint}>
-        Press Enter or tap ✓ to submit
+        
+        {canShowHint && (
+          <button
+            type="button"
+            className={styles.hintButton}
+            onClick={onShowHint}
+            disabled={disabled}
+            aria-label="Show hint"
+          >
+            💡
+          </button>
+        )}
       </div>
     </div>
   );
