@@ -21,31 +21,31 @@ const modeInfo = {
   subtraction: {
     name: 'Subtraction',
     icon: '➖',
-    color: 'var(--color-fun-orange)',
+    color: 'var(--color-fun-blue)',
     description: 'Take numbers away to find the difference!'
   },
   multiplication: {
     name: 'Multiplication',
     icon: '✖️',
-    color: 'var(--color-fun-purple)',
+    color: 'var(--color-fun-red)',
     description: 'Find how many in groups of numbers!'
   },
   division: {
     name: 'Division',
     icon: '➗',
-    color: 'var(--color-fun-pink)',
+    color: 'var(--color-fun-yellow)',
     description: 'Share numbers equally into groups!'
   },
   mixed: {
     name: 'Mixed',
     icon: '🎲',
-    color: 'var(--color-fun-blue)',
+    color: 'var(--color-fun-mint)',
     description: 'Practice all operations together!'
   },
   equations: {
     name: 'Equations',
     icon: '⚖️',
-    color: 'var(--color-fun-yellow)',
+    color: 'var(--color-fun-purple)',
     description: 'Balance the equation scale!'
   },
 };

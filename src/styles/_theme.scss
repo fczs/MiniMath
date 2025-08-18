@@ -74,12 +74,14 @@
   --color-focus-ring: var(--color-primary-200);
   
   // Kid-friendly bright colors
-  --color-fun-purple: #8b5cf6;
-  --color-fun-pink: #ec4899;
-  --color-fun-orange: #f97316;
-  --color-fun-green: #10b981;
-  --color-fun-blue: #06b6d4;
-  --color-fun-yellow: #eab308;
+  --color-fun-purple: #a78bfa;
+  --color-fun-pink: #f472b6;
+  --color-fun-orange: #fb923c;
+  --color-fun-green: #34d399;
+  --color-fun-blue: #2288ee;
+  --color-fun-yellow: #fbbf24;
+  --color-fun-red: #ff6355;
+  --color-fun-mint: #81e6d9;
 }
 
 [data-theme="dark"] {
@@ -93,7 +95,7 @@
   --color-text-primary: var(--color-gray-50);
   --color-text-secondary: var(--color-gray-300);
   --color-text-muted: var(--color-gray-400);
-  --color-text-on-primary: var(--color-gray-900);
+  --color-text-on-primary: #ffffff;
   
   --color-focus: var(--color-primary-400);
   --color-focus-ring: var(--color-primary-800);
@@ -103,8 +105,10 @@
   --color-fun-pink: #f472b6;
   --color-fun-orange: #fb923c;
   --color-fun-green: #34d399;
-  --color-fun-blue: #22d3ee;
+  --color-fun-blue: #2288ee;
   --color-fun-yellow: #fbbf24;
+  --color-fun-red: #ff6355;
+  --color-fun-mint: #81e6d9;
 }
 
 // CSS custom properties for easy theming

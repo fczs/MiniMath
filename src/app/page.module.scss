@@ -2,7 +2,11 @@
 @import '../styles/tokens';
 
 .container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   padding: var(--spacing-8) var(--spacing-4);
+  flex: 1;
   max-width: 1200px;
   margin: 0 auto;
   
@@ -11,17 +15,13 @@
   }
   
   @include respond(lg) {
-    padding: var(--spacing-16) var(--spacing-8);
+    padding: var(--spacing-12) var(--spacing-8) var(--spacing-8);
   }
 }
 
 .hero {
   text-align: center;
   margin-bottom: var(--spacing-16);
-  
-  @include respond(sm) {
-    margin-bottom: var(--spacing-20);
-  }
 }
 
 .title {
@@ -205,6 +205,23 @@
   
   @include respond(sm) {
     font-size: $font-size-lg;
+  }
+}
+
+// Footer styles
+.footer {
+  text-align: center;
+  padding: var(--spacing-4) 0;
+}
+
+.footerText {
+  font-size: $font-size-sm;
+  color: var(--color-text-muted);
+  margin: 0;
+  line-height: $line-height-normal;
+  
+  @include respond(sm) {
+    font-size: $font-size-base;
   }
 }
 
