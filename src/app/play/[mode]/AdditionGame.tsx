@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useGame } from '@/lib/engine/game';
@@ -14,6 +14,33 @@ import Modal from '@/components/ui/Modal';
 import styles from './AdditionGame.module.scss';
 
 type GamePhase = 'setup' | 'playing' | 'complete';
+
+// LocalStorage utilities for keypad mode preference
+const KEYPAD_MODE_KEY = 'minimath-keypad-mode';
+
+const getKeypadPreference = (): boolean => {
+  if (typeof window === 'undefined') return true; // Default to keypad on server
+  
+  try {
+    const saved = localStorage.getItem(KEYPAD_MODE_KEY);
+
+    return saved === null ? true : saved === 'true'; // Default to true if not set
+  } catch (error) {
+    console.warn('Failed to read keypad preference from localStorage:', error);
+
+    return true;
+  }
+};
+
+const setKeypadPreference = (useKeypad: boolean): void => {
+  if (typeof window === 'undefined') return;
+  
+  try {
+    localStorage.setItem(KEYPAD_MODE_KEY, useKeypad.toString());
+  } catch (error) {
+    console.warn('Failed to save keypad preference to localStorage:', error);
+  }
+};
 
 const getLevelName = (level: Level): string => {
   switch (level) {
@@ -34,8 +61,9 @@ export default function AdditionGame() {
   const [gamePhase, setGamePhase] = useState<GamePhase>('setup');
   const [selectedLevel, setSelectedLevel] = useState<Level>(1);
   const [inputValue, setInputValue] = useState('');
-  const [useKeypad, setUseKeypad] = useState(true);
+  const [useKeypad, setUseKeypad] = useState(getKeypadPreference);
   const [isHintModalOpen, setIsHintModalOpen] = useState(false);
+  const autoNextTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Handle game completion
   useEffect(() => {
@@ -47,6 +75,37 @@ export default function AdditionGame() {
       }, 2000);
     }
   }, [state.isComplete, state.sessionStats, router]);
+
+  // Save keypad preference to localStorage when it changes
+  useEffect(() => {
+    setKeypadPreference(useKeypad);
+  }, [useKeypad]);
+
+  // Clear auto-next timer helper function
+  const clearAutoNextTimer = () => {
+    if (autoNextTimerRef.current) {
+      clearTimeout(autoNextTimerRef.current);
+      autoNextTimerRef.current = null;
+    }
+  };
+
+  // Auto-advance to next problem after correct answer or skip
+  useEffect(() => {
+    clearAutoNextTimer(); // Clear any existing timer
+    
+    const feedback = state.feedback;
+    const shouldAutoAdvance = feedback.type === 'correct' || feedback.type === 'revealed';
+    
+    if (shouldAutoAdvance && gamePhase === 'playing') {
+      autoNextTimerRef.current = setTimeout(() => {
+        actions.nextProblem();
+        setInputValue('');
+        setIsHintModalOpen(false);
+      }, 3500);
+    }
+    
+    return clearAutoNextTimer; // Cleanup on unmount or dependency change
+  }, [state.feedback, gamePhase, actions]);
 
   const handleStartGame = (level: Level) => {
     setSelectedLevel(level);
@@ -75,12 +134,14 @@ export default function AdditionGame() {
   };
 
   const handleNextProblem = () => {
+    clearAutoNextTimer(); // Clear auto-next timer when manually advancing
     actions.nextProblem();
     setInputValue('');
     setIsHintModalOpen(false);
   };
 
   const handleSkipProblem = () => {
+    clearAutoNextTimer(); // Clear any existing timer
     actions.skipProblem();
     setInputValue('');
     setIsHintModalOpen(false);
