@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { getAvailableModes } from '@/lib/modes/registry';
 import styles from './page.module.scss';
 
 interface ModeCard {
@@ -9,50 +10,34 @@ interface ModeCard {
   description: string;
 }
 
-const mathModes: ModeCard[] = [
-  {
-    id: 'addition',
-    name: 'Addition',
-    icon: '➕',
-    color: 'var(--color-fun-green)',
-    description: 'Put numbers together!'
-  },
-  {
-    id: 'subtraction',
-    name: 'Subtraction',
-    icon: '➖',
-    color: 'var(--color-fun-blue)',
-    description: 'Take numbers away!'
-  },
-  {
-    id: 'multiplication',
-    name: 'Multiplication',
-    icon: '✖️',
-    color: 'var(--color-fun-red)',
-    description: 'Groups of numbers!'
-  },
-  {
-    id: 'division',
-    name: 'Division',
-    icon: '➗',
-    color: 'var(--color-fun-yellow)',
-    description: 'Share equally!'
-  },
-  {
-    id: 'mixed',
-    name: 'Mixed',
-    icon: '🎲',
-    color: 'var(--color-fun-mint)',
-    description: 'Mix it all up!'
-  },
-  {
-    id: 'equations',
-    name: 'Equations',
-    icon: '⚖️',
-    color: 'var(--color-fun-purple)',
-    description: 'Balance the scale!'
-  },
-];
+// Legacy color mapping to preserve existing UI colors
+const legacyModeColors = {
+  addition: 'var(--color-fun-green)',
+  subtraction: 'var(--color-fun-blue)',
+  multiplication: 'var(--color-fun-red)',
+  division: 'var(--color-fun-yellow)',
+  mixed: 'var(--color-fun-mint)',
+  equation: 'var(--color-fun-purple)',
+} as const;
+
+// Legacy descriptions to preserve existing copy
+const legacyDescriptions = {
+  addition: 'Put numbers together!',
+  subtraction: 'Take numbers away!',
+  multiplication: 'Groups of numbers!',
+  division: 'Share equally!',
+  mixed: 'Mix it all up!',
+  equation: 'Balance the scale!',
+} as const;
+
+// Convert mode registry to ModeCard format for display
+const mathModes: ModeCard[] = getAvailableModes().map(config => ({
+  id: config.id,
+  name: config.displayName,
+  icon: config.emoji,
+  color: legacyModeColors[config.id] || 'var(--color-primary-500)',
+  description: legacyDescriptions[config.id] || 'Coming soon!',
+}));
 
 export default function HomePage() {
   return (

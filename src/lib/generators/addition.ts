@@ -4,7 +4,8 @@ export class AdditionGenerator implements Generator {
   private usedProblems: Set<string> = new Set();
   private zeroExampleUsed = false;
 
-  next(level: Level): Problem {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  next(level: Level, _sessionCtx?: object): Problem {
     let operands: number[];
     let attempts = 0;
     const maxAttempts = 1000; // Increase attempts to handle constraints

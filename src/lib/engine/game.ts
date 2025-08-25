@@ -1,10 +1,10 @@
 import { useReducer, useCallback } from 'react';
 import { GameState, GameAction, Problem, Result, SessionStats, Level, Mode, Generator } from '../types';
-import { AdditionGenerator } from '../generators/addition';
+import { getModeConfig } from '../modes/registry';
+import { saveLastSession } from '../persist/local';
 
 const TOTAL_PROBLEMS = 10;
 const MAX_ATTEMPTS = 2;
-const STORAGE_KEY = 'minimath:last-session';
 
 // Initial state factory
 const createInitialState = (): GameState => ({
@@ -214,11 +214,7 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
         const sessionStats = calculateSessionStats(results, state.problems);
         
         // Save to localStorage
-        try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(sessionStats));
-        } catch (error) {
-          console.warn('Failed to save session stats:', error);
-        }
+        saveLastSession(sessionStats);
         
         return {
           ...state,
@@ -266,11 +262,7 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
     case 'COMPLETE_SESSION': {
       const sessionStats = calculateSessionStats(state.results, state.problems);
       
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(sessionStats));
-      } catch (error) {
-        console.warn('Failed to save session stats:', error);
-      }
+      saveLastSession(sessionStats);
       
       return {
         ...state,
@@ -284,15 +276,11 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
   }
 };
 
-// Generator factory
+// Generator factory - use mode registry
 const getGenerator = (mode: Mode): Generator => {
-  switch (mode) {
-    case 'addition':
-      return new AdditionGenerator();
-    // TODO: Add other generators as needed
-    default:
-      throw new Error(`Generator not implemented for mode: ${mode}`);
-  }
+  const modeConfig = getModeConfig(mode);
+
+  return modeConfig.generator;
 };
 
 // Custom hook for game state management
@@ -341,15 +329,5 @@ export const useGame = () => {
   };
 };
 
-// Utility to get last session from localStorage
-export const getLastSession = (): SessionStats | null => {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-
-    return stored ? JSON.parse(stored) : null;
-  } catch (error) {
-    console.warn('Failed to load last session:', error);
-
-    return null;
-  }
-};
+// Re-export from persistence layer for convenience
+export { getLastSession } from '../persist/local';

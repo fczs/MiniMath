@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import AdditionGame from './AdditionGame';
+import GameShell from '@/components/game/GameShell';
+import { getModeConfig, getImplementedModes } from '@/lib/modes/registry';
+import { Mode } from '@/lib/types';
 import styles from './page.module.scss';
 
 interface PageProps {
@@ -9,46 +11,19 @@ interface PageProps {
   }>;
 }
 
-const validModes = ['addition', 'subtraction', 'multiplication', 'division', 'mixed', 'equations'];
+// Get implemented modes from registry
+const implementedModes = getImplementedModes();
+const validModes = implementedModes.map(config => config.id) as string[];
 
-const modeInfo = {
-  addition: {
-    name: 'Addition',
-    icon: '➕',
-    color: 'var(--color-fun-green)',
-    description: 'Put numbers together to find the sum!'
-  },
-  subtraction: {
-    name: 'Subtraction',
-    icon: '➖',
-    color: 'var(--color-fun-blue)',
-    description: 'Take numbers away to find the difference!'
-  },
-  multiplication: {
-    name: 'Multiplication',
-    icon: '✖️',
-    color: 'var(--color-fun-red)',
-    description: 'Find how many in groups of numbers!'
-  },
-  division: {
-    name: 'Division',
-    icon: '➗',
-    color: 'var(--color-fun-yellow)',
-    description: 'Share numbers equally into groups!'
-  },
-  mixed: {
-    name: 'Mixed',
-    icon: '🎲',
-    color: 'var(--color-fun-mint)',
-    description: 'Practice all operations together!'
-  },
-  equations: {
-    name: 'Equations',
-    icon: '⚖️',
-    color: 'var(--color-fun-purple)',
-    description: 'Balance the equation scale!'
-  },
-};
+// Legacy mode info for color mapping (to preserve existing colors)
+const legacyModeColors = {
+  addition: 'var(--color-fun-green)',
+  subtraction: 'var(--color-fun-blue)',
+  multiplication: 'var(--color-fun-red)',
+  division: 'var(--color-fun-yellow)',
+  mixed: 'var(--color-fun-mint)',
+  equation: 'var(--color-fun-purple)',
+} as const;
 
 export default async function PlayPage({ params }: PageProps) {
   const { mode } = await params;
@@ -57,14 +32,16 @@ export default async function PlayPage({ params }: PageProps) {
     notFound();
   }
   
-  const currentMode = modeInfo[mode as keyof typeof modeInfo];
+  const modeConfig = getModeConfig(mode as Mode);
 
-  // For addition mode, render the full game
-  if (mode === 'addition') {
-    return <AdditionGame />;
+  // For implemented modes, use GameShell
+  if (validModes.includes(mode)) {
+    return <GameShell mode={mode as Mode} />;
   }
 
-  // For other modes, show placeholder
+  // For unimplemented modes, show placeholder (this shouldn't be reached with current logic)
+  const legacyColor = legacyModeColors[mode as keyof typeof legacyModeColors] || 'var(--color-primary-500)';
+  
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -75,19 +52,19 @@ export default async function PlayPage({ params }: PageProps) {
         
         <div 
           className={styles.modeInfo}
-          style={{ '--mode-color': currentMode.color } as React.CSSProperties}
+          style={{ '--mode-color': legacyColor } as React.CSSProperties}
         >
           <div className={styles.modeIcon} aria-hidden="true">
             <div className={['addition', 'subtraction', 'multiplication', 'division'].includes(mode) ? styles.modeIconBright : ''}>
-              {currentMode.icon}
+              {modeConfig.emoji}
             </div>
           </div>
           <div>
             <h1 className={styles.modeTitle}>
-              {currentMode.name} Game
+              {modeConfig.displayName} Game
             </h1>
             <p className={styles.modeDescription}>
-              {currentMode.description}
+              Coming Soon!
             </p>
           </div>
         </div>
@@ -99,11 +76,11 @@ export default async function PlayPage({ params }: PageProps) {
             🎮
           </div>
           <h2 className={styles.placeholderTitle}>
-            Game Screen: {currentMode.name}
+            Game Screen: {modeConfig.displayName}
           </h2>
           <p className={styles.placeholderText}>
-            This is where the {currentMode.name.toLowerCase()} game will be implemented. 
-            Players will practice {currentMode.name.toLowerCase()} problems with 
+            This is where the {modeConfig.displayName.toLowerCase()} game will be implemented. 
+            Players will practice {modeConfig.displayName.toLowerCase()} problems with 
             instant feedback and fun animations!
           </p>
           
@@ -136,10 +113,10 @@ export async function generateMetadata({ params }: PageProps) {
     };
   }
   
-  const currentMode = modeInfo[mode as keyof typeof modeInfo];
+  const modeConfig = getModeConfig(mode as Mode);
   
   return {
-    title: `${currentMode.name} Game - MiniMath`,
-    description: `Practice ${currentMode.name.toLowerCase()} with fun, interactive math games for kids. ${currentMode.description}`,
+    title: `${modeConfig.displayName} Game - MiniMath`,
+    description: `Practice ${modeConfig.displayName.toLowerCase()} with fun, interactive math games for kids.`,
   };
 }

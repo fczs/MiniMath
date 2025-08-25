@@ -84,9 +84,9 @@ describe('useGame hook', () => {
       result.current.actions.submitAnswer(wrongAnswer);
     });
     
-    expect(result.current.state.feedback.type).toBe('retry');
+    expect(result.current.state.feedback.type).toBe('incorrect');
     expect(result.current.state.currentAttempt).toBe(2);
-    expect(result.current.state.showHint).toBe(true); // Level 1 should show hint
+    expect(result.current.state.showHint).toBe(false); // Hint not auto-shown, user must click hint button
     expect(result.current.state.results).toHaveLength(0); // No result recorded yet
   });
 
@@ -173,7 +173,7 @@ describe('useGame hook', () => {
       result1.current.actions.submitAnswer(999); // Wrong answer
     });
     
-    expect(result1.current.state.showHint).toBe(true);
+    expect(result1.current.state.showHint).toBe(false); // Hint not auto-shown
     
     // Test Level 2 - should not show hint
     const { result: result2 } = renderHook(() => useGame());

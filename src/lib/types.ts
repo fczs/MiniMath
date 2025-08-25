@@ -33,7 +33,7 @@ export interface SessionStats {
 }
 
 export interface Generator {
-  next(level: Level): Problem;
+  next(level: Level, sessionCtx?: object): Problem;
   reset(): void;
 }
 
