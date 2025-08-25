@@ -118,6 +118,17 @@
   }
 }
 
+.minusKey {
+  // Special styling for minus key (could be different color if needed)
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-bold;
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
 .actionKey {
   gap: var(--spacing-1);
 }

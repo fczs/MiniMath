@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useGame } from '@/lib/engine/game';
@@ -108,9 +108,17 @@ export default function GameShell({ mode }: GameShellProps) {
   };
 
   const handleKeypadSubmit = () => {
-    const answer = inputValue.trim() === '' ? null : parseInt(inputValue, 10);
+    if (inputValue.trim() === '') {
+      handleSubmitAnswer(null);
 
-    handleSubmitAnswer(answer);
+      return;
+    }
+
+    // Convert mathematical minus sign (U+2212) to regular minus sign for parsing
+    const normalizedInput = inputValue.replace(/−/g, '-');
+    const answer = parseInt(normalizedInput, 10);
+
+    handleSubmitAnswer(isNaN(answer) ? null : answer);
   };
 
   const handleNextProblem = () => {
@@ -147,9 +155,9 @@ export default function GameShell({ mode }: GameShellProps) {
         };
       case 'subtraction':
         return {
-          1: { range: 'Single digits (0-9)', example: '8 - 3 = ?' },
-          2: { range: 'Two digits (10-99)', example: '52 - 24 = ?' },
-          3: { range: 'Three digits (100-999)', example: '678 - 234 = ?' }
+          1: { range: 'Single digits (0-9)', example: '8 − 3 = ?' },
+          2: { range: 'Two digits (10-99)', example: '52 − 24 = ?' },
+          3: { range: 'Mixed range (0-99)', example: '25 − 67 = ?' }
         };
       default:
         return {
@@ -165,7 +173,10 @@ export default function GameShell({ mode }: GameShellProps) {
   // Setup phase - level selection
   if (gamePhase === 'setup') {
     return (
-      <div className={styles.container}>
+      <div 
+        className={styles.container}
+        style={{ '--mode-color': getModeColor(mode) } as React.CSSProperties}
+      >
         <div className={styles.header}>
           <Link href="/" className={styles.backButton}>
             <span aria-hidden="true">←</span>
@@ -204,8 +215,8 @@ export default function GameShell({ mode }: GameShellProps) {
                 <br />
                 <span className={styles.levelExample}>Example: {levelDescriptions[1].example}</span>
               </div>
-              {mode === 'addition' && (
-                <div className={styles.levelFeature}>
+              {(mode === 'addition' || mode === 'subtraction') && (
+                <div className={`${styles.levelFeature} ${styles.levelFeatureHints}`}>
                   ✨ Includes helpful hints!
                 </div>
               )}
@@ -237,6 +248,11 @@ export default function GameShell({ mode }: GameShellProps) {
                 <br />
                 <span className={styles.levelExample}>Example: {levelDescriptions[3].example}</span>
               </div>
+              {mode === 'subtraction' && (
+                <div className={`${styles.levelFeature} ${styles.levelFeatureNegative}`}>
+                  🎯 Negative results!
+                </div>
+              )}
             </button>
           </div>
         </div>
@@ -247,7 +263,10 @@ export default function GameShell({ mode }: GameShellProps) {
   // Complete phase
   if (gamePhase === 'complete') {
     return (
-      <div className={styles.container}>
+      <div 
+        className={styles.container}
+        style={{ '--mode-color': getModeColor(mode) } as React.CSSProperties}
+      >
         <div className={styles.completeArea}>
           <div className={styles.completeIcon}>🎉</div>
           <h2 className={styles.completeTitle}>Session Complete!</h2>
@@ -281,9 +300,15 @@ export default function GameShell({ mode }: GameShellProps) {
   const showFeedback = Boolean(state.feedback.type && state.feedback.message);
   const isInputDisabled = showFeedback && state.feedback.type !== 'incorrect';
   const canShowHint = modeConfig.hints?.eligible(state.currentProblem!) && state.level === 1 && state.currentAttempt > 1;
+  
+  // Show minus key for Level 3 subtraction only
+  const showMinusKey = mode === 'subtraction' && selectedLevel === 3;
 
   return (
-    <div className={styles.container}>
+    <div 
+      className={styles.container}
+      style={{ '--mode-color': getModeColor(mode) } as React.CSSProperties}
+    >
       <div className={styles.header}>
         <Link href="/" className={styles.backButton}>
           <span aria-hidden="true">←</span>
@@ -348,6 +373,7 @@ export default function GameShell({ mode }: GameShellProps) {
                     onShowHint={handleShowHint}
                     disabled={isInputDisabled}
                     canShowHint={canShowHint}
+                    showMinusKey={showMinusKey}
                   />
                 </div>
               </div>
@@ -362,10 +388,21 @@ export default function GameShell({ mode }: GameShellProps) {
         onClose={handleCloseHint}
       >
         {state.currentProblem && (
-          <HintDisplay
-            problem={state.currentProblem}
-            show={true}
-          />
+          <>
+            {/* Use mode-specific hint component if available */}
+            {modeConfig.hints?.component ? (
+              <Suspense fallback={<div>Loading hint...</div>}>
+                <modeConfig.hints.component
+                  problem={state.currentProblem}
+                />
+              </Suspense>
+            ) : (
+              <HintDisplay
+                problem={state.currentProblem}
+                show={true}
+              />
+            )}
+          </>
         )}
       </Modal>
     </div>
@@ -390,4 +427,18 @@ function getGameDescription(mode: Mode): string {
     default:
       return 'Practice math problems!';
   }
+}
+
+// Helper function to get mode colors 
+function getModeColor(mode: Mode): string {
+  const modeColors = {
+    addition: 'var(--color-fun-green)',
+    subtraction: 'var(--color-fun-blue)',
+    multiplication: 'var(--color-fun-red)',
+    division: 'var(--color-fun-yellow)',
+    mixed: 'var(--color-fun-mint)',
+    equation: 'var(--color-fun-purple)',
+  };
+  
+  return modeColors[mode] || 'var(--color-primary-500)';
 }

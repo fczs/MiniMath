@@ -2,6 +2,9 @@ import React from 'react';
 import { Mode, Problem, Generator } from '../types';
 import { AdditionGenerator, SubtractionGenerator } from '../generators';
 
+// Lazy import hint components to avoid circular dependencies
+const SubtractionHint = React.lazy(() => import('../../components/game/SubtractionHint'));
+
 export type ModeConfig = {
   id: Mode;
   displayName: string;
@@ -42,12 +45,15 @@ export const MODE_REGISTRY: Record<Mode, ModeConfig> = {
   },
   subtraction: {
     id: 'subtraction',
-    displayName: 'Subtraction', 
+    displayName: 'Subtraction',
     emoji: '➖',
     generator: new SubtractionGenerator(),
-    // No hints for now, but slots exist for future use
+    hints: {
+      eligible: (problem: Problem) => problem.level === 1, // Only for Beginner level
+      component: SubtractionHint,
+    },
     rules: {
-      allowNegatives: false, // Following Addition-like simplicity
+      allowNegatives: false, // Levels 1 & 2 are non-negative, Level 3 is handled by generator
       integerOnly: true,
     },
   },

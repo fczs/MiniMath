@@ -1,0 +1,125 @@
+@import '../../styles/breakpoints';
+@import '../../styles/tokens';
+
+.container {
+  padding: var(--spacing-6);
+  background: linear-gradient(135deg, var(--color-fun-blue), var(--color-primary-100));
+  border-radius: var(--radius-xl);
+  color: white;
+  text-align: center;
+  
+  [data-theme="dark"] & {
+    background: linear-gradient(135deg, var(--color-fun-blue), var(--color-primary-800));
+  }
+}
+
+.title {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  margin-bottom: var(--spacing-6);
+  
+  @include respond(sm) {
+    font-size: $font-size-xl;
+  }
+}
+
+.visualization {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  align-items: center;
+}
+
+.explanation {
+  font-size: $font-size-base;
+  line-height: $line-height-relaxed;
+  margin-bottom: var(--spacing-2);
+  
+  @include respond(sm) {
+    font-size: $font-size-lg;
+  }
+}
+
+.tilesContainer {
+  display: flex;
+  justify-content: center;
+  margin: var(--spacing-4) 0;
+}
+
+.tilesRow {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--spacing-2);
+  max-width: 300px;
+  
+  @include respond(sm) {
+    max-width: 400px;
+  }
+}
+
+.tile {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tileCrossed {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.6;
+}
+
+.tileEmoji {
+  font-size: 1.5rem;
+  line-height: 1;
+  
+  @include respond(sm) {
+    font-size: 2rem;
+  }
+}
+
+.crossmark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.2rem;
+  color: var(--color-danger-500);
+  font-weight: $font-weight-bold;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  
+  @include respond(sm) {
+    font-size: 1.5rem;
+  }
+}
+
+.result {
+  margin-top: var(--spacing-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  align-items: center;
+}
+
+.calculation {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  font-family: var(--font-family-monospace);
+  background: rgba(255, 255, 255, 0.2);
+  padding: var(--spacing-3) var(--spacing-4);
+  border-radius: var(--radius-lg);
+  
+  @include respond(sm) {
+    font-size: $font-size-xl;
+  }
+}
+
+.answer {
+  color: var(--color-fun-yellow);
+  font-weight: $font-weight-bold;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}

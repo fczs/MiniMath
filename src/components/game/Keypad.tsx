@@ -11,6 +11,7 @@ interface KeypadProps {
   disabled?: boolean;
   value: string;
   canShowHint?: boolean;
+  showMinusKey?: boolean; // For Level 3 subtraction
 }
 
 export default function Keypad({ 
@@ -20,7 +21,8 @@ export default function Keypad({
   onShowHint,
   disabled = false,
   value,
-  canShowHint = false
+  canShowHint = false,
+  showMinusKey = false
 }: KeypadProps) {
   const [pressedKey, setPressedKey] = useState<string | null>(null);
 
@@ -34,7 +36,17 @@ export default function Keypad({
     setTimeout(() => setPressedKey(null), 150);
   };
 
-  const digits = ['1', '2', '3', '4', '5', '6', '7', '8', '9', null, '0', 'hint'] as const;
+  // Conditionally include minus key to the left of 0 for Level 3 subtraction
+  const digits = showMinusKey 
+    ? ['1', '2', '3', '4', '5', '6', '7', '8', '9', '−', '0', 'hint'] as const
+    : ['1', '2', '3', '4', '5', '6', '7', '8', '9', null, '0', 'hint'] as const;
+
+  const handleMinusInput = () => {
+    // Only add minus if value is empty or doesn't already start with minus
+    if (value.trim() === '' || !value.startsWith('−')) {
+      onNumberInput('−');
+    }
+  };
 
   return (
     <div className={styles.container}>
@@ -66,6 +78,23 @@ export default function Keypad({
                   style={{ opacity: canShowHint ? 1 : 0 }}
                 >
                   💡
+                </button>
+              );
+            }
+            
+            if (digit === '−') {
+              return (
+                <button
+                  key="minus"
+                  type="button"
+                  className={`${styles.key} ${styles.numberKey} ${styles.minusKey} ${
+                    pressedKey === '−' ? styles.pressed : ''
+                  }`}
+                  onClick={() => handleKeyPress('−', handleMinusInput)}
+                  disabled={disabled || value.startsWith('−')}
+                  aria-label="Minus sign"
+                >
+                  −
                 </button>
               );
             }

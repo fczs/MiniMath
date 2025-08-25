@@ -213,4 +213,129 @@ describe('useGame hook', () => {
     expect(result.current.state.isComplete).toBe(true);
     expect(result.current.state.sessionStats).not.toBeNull();
   });
+
+  describe('Subtraction mode integration', () => {
+    it('should work with Level 1 subtraction (non-negative)', () => {
+      const { result } = renderHook(() => useGame());
+      
+      act(() => {
+        result.current.actions.startGame(1, 'subtraction');
+      });
+      
+      expect(result.current.state.mode).toBe('subtraction');
+      expect(result.current.state.level).toBe(1);
+      expect(result.current.state.currentProblem).toBeTruthy();
+      
+      const problem = result.current.state.currentProblem!;
+
+      expect(problem.mode).toBe('subtraction');
+      expect(problem.operands).toHaveLength(2);
+      expect(problem.answer).toBeGreaterThanOrEqual(0); // Non-negative for Level 1
+      expect(problem.prompt).toContain('−'); // Real minus sign
+    });
+
+    it('should work with Level 3 subtraction (negative results)', () => {
+      const { result } = renderHook(() => useGame());
+      
+      act(() => {
+        result.current.actions.startGame(3, 'subtraction');
+      });
+      
+      expect(result.current.state.mode).toBe('subtraction');
+      expect(result.current.state.level).toBe(3);
+      expect(result.current.state.currentProblem).toBeTruthy();
+      
+      const problem = result.current.state.currentProblem!;
+
+      expect(problem.mode).toBe('subtraction');
+      expect(problem.operands).toHaveLength(2);
+      expect(problem.answer).toBeLessThan(0); // Negative for Level 3
+      
+      const [a, b] = problem.operands;
+
+      expect(a).toBeLessThan(b); // Ensure a < b for negative result
+    });
+
+    it('should complete a full 10-problem subtraction session', () => {
+      const { result } = renderHook(() => useGame());
+      
+      act(() => {
+        result.current.actions.startGame(2, 'subtraction');
+      });
+      
+      // Simulate completing 10 problems
+      for (let i = 0; i < 10; i++) {
+        const problem = result.current.state.currentProblem!;
+        const correctAnswer = problem.answer;
+        
+        act(() => {
+          result.current.actions.submitAnswer(correctAnswer);
+        });
+        
+        act(() => {
+          result.current.actions.nextProblem();
+        });
+      }
+      
+      // Should be complete after 10 problems  
+      expect(result.current.state.isComplete).toBe(true);
+      expect(result.current.state.results).toHaveLength(10);
+      expect(result.current.state.sessionStats).toBeTruthy();
+      expect(result.current.state.sessionStats!.total).toBe(10);
+      expect(result.current.state.sessionStats!.correct).toBe(10);
+      expect(result.current.state.sessionStats!.accuracy).toBe(100);
+    });
+  });
+
+  describe('Negative numbers handling', () => {
+    it('should correctly validate negative answers for subtraction level 3', () => {
+      const { result } = renderHook(() => useGame());
+      
+      // Start Level 3 subtraction (which produces negative results)
+      act(() => {
+        result.current.actions.startGame(3, 'subtraction');
+      });
+
+      const problem = result.current.state.currentProblem!;
+
+      expect(problem.mode).toBe('subtraction');
+      expect(problem.level).toBe(3);
+      expect(problem.answer).toBeLessThan(0); // Level 3 should have negative results
+
+      // Submit the correct negative answer
+      act(() => {
+        result.current.actions.submitAnswer(problem.answer);
+      });
+
+      // Should be marked as correct
+      expect(result.current.state.feedback.type).toBe('correct');
+      expect(result.current.state.results).toHaveLength(1);
+      expect(result.current.state.results[0].correct).toBe(true);
+      expect(result.current.state.results[0].userAnswer).toBe(problem.answer);
+    });
+
+    it('should reject incorrect positive answers for negative problems', () => {
+      const { result } = renderHook(() => useGame());
+      
+      // Start Level 3 subtraction
+      act(() => {
+        result.current.actions.startGame(3, 'subtraction');
+      });
+
+      const problem = result.current.state.currentProblem!;
+
+      expect(problem.answer).toBeLessThan(0);
+
+      // Submit a positive answer (wrong)
+      const wrongAnswer = Math.abs(problem.answer); // Make it positive
+
+      act(() => {
+        result.current.actions.submitAnswer(wrongAnswer);
+      });
+
+      // Should be marked as incorrect
+      expect(result.current.state.feedback.type).toBe('incorrect');
+      expect(result.current.state.results).toHaveLength(0); // No results yet, first attempt
+    });
+  });
 });

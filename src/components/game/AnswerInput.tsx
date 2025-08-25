@@ -32,8 +32,8 @@ export default function AnswerInput({
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
     
-    // Only allow digits, minus sign at start, and empty string
-    const regex = /^-?\d*$/;
+    // Only allow digits, minus sign (regular or mathematical) at start, and empty string  
+    const regex = /^[-−]?\d*$/;
 
     if (regex.test(inputValue)) {
       setValue(inputValue);
@@ -46,7 +46,9 @@ export default function AnswerInput({
     if (trimmed === '') {
       onSubmit(null);
     } else {
-      const numValue = parseInt(trimmed, 10);
+      // Convert mathematical minus sign (U+2212) to regular minus sign for parsing
+      const normalizedInput = trimmed.replace(/−/g, '-');
+      const numValue = parseInt(normalizedInput, 10);
 
       if (!isNaN(numValue)) {
         onSubmit(numValue);

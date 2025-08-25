@@ -79,9 +79,9 @@
   font-size: 2.5rem;
   line-height: 1;
   padding: var(--spacing-4);
-  background: linear-gradient(135deg, var(--color-fun-green), transparent);
+  background: linear-gradient(135deg, var(--mode-color, var(--color-fun-green)), transparent);
   border-radius: var(--radius-xl);
-  border: 2px solid var(--color-fun-green);
+  border: 2px solid var(--mode-color, var(--color-fun-green));
   order: 1;
   
   @include respond(sm) {
@@ -167,7 +167,7 @@
   &:hover {
     transform: translateY(-4px);
     box-shadow: var(--shadow-lg);
-    border-color: var(--color-fun-green);
+    border-color: var(--mode-color, var(--color-fun-green));
   }
   
   &:active {
@@ -185,7 +185,7 @@
   font-size: $font-size-2xl;
   font-weight: $font-weight-bold;
   color: white;
-  background: linear-gradient(135deg, var(--color-fun-green), var(--color-success-600));
+  background: linear-gradient(135deg, var(--mode-color, var(--color-fun-green)), var(--color-success-600));
   border-radius: 50%;
   
   @include respond(sm) {
@@ -219,14 +219,27 @@
 
 .levelFeature {
   font-size: $font-size-sm;
-  color: var(--color-fun-green);
   font-weight: $font-weight-semibold;
   padding: var(--spacing-2) var(--spacing-4);
-  background-color: var(--color-success-50);
   border-radius: var(--radius-lg);
+}
+
+.levelFeatureHints {
+  color: var(--color-fun-green);
+  background-color: var(--color-success-50);
   
   [data-theme="dark"] & {
     background-color: var(--color-success-900);
+  }
+}
+
+.levelFeatureNegative {
+  color: var(--color-warning-600);
+  background-color: var(--color-warning-50);
+  
+  [data-theme="dark"] & {
+    color: var(--color-warning-400);
+    background-color: var(--color-warning-900);
   }
 }
 
