@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { SessionStats } from '@/lib/types';
+import { SessionStats, Mode } from '@/lib/types';
 import { getLastSession } from '@/lib/engine/game';
+import { getLastMode } from '@/lib/persist/local';
 import styles from './page.module.scss';
 
 // Achievement calculations
@@ -66,14 +67,37 @@ const formatTime = (milliseconds: number): string => {
   return `${minutes}m ${remainingSeconds}s`;
 };
 
+// Get mode display name
+const getModeDisplayName = (mode: Mode): string => {
+  switch (mode) {
+    case 'addition':
+      return 'Addition';
+    case 'subtraction':
+      return 'Subtraction';
+    case 'multiplication':
+      return 'Multiplication';
+    case 'division':
+      return 'Division';
+    case 'mixed':
+      return 'Mixed';
+    case 'equation':
+      return 'Equation';
+    default:
+      return 'Math';
+  }
+};
+
 export default function ResultsPage() {
   const [sessionStats, setSessionStats] = useState<SessionStats | null>(null);
+  const [lastMode, setLastMode] = useState<Mode | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const stats = getLastSession();
+    const mode = getLastMode();
 
     setSessionStats(stats);
+    setLastMode(mode);
     setLoading(false);
   }, []);
 
@@ -227,8 +251,11 @@ export default function ResultsPage() {
           <Link href="/" className={styles.primaryButton}>
             Try Another Mode
           </Link>
-          <Link href="/play/addition" className={styles.secondaryButton}>
-            Play Addition Again
+          <Link 
+            href={lastMode ? `/play/${lastMode}` : '/play/addition'} 
+            className={styles.secondaryButton}
+          >
+            Play {lastMode ? getModeDisplayName(lastMode) : 'Addition'} Again
           </Link>
         </div>
       </div>

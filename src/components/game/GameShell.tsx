@@ -159,6 +159,18 @@ export default function GameShell({ mode }: GameShellProps) {
           2: { range: 'Two digits (10-99)', example: '52 − 24 = ?' },
           3: { range: 'Mixed range (0-99)', example: '25 − 67 = ?' }
         };
+      case 'multiplication':
+        return {
+          1: { range: 'Single digits (0-9)', example: '4 × 7 = ?' },
+          2: { range: 'Multiples of 10 mix', example: '4 × 50 = ?' },
+          3: { range: 'Mixed range', example: '6 × 47 = ?' }
+        };
+      case 'division':
+        return {
+          1: { range: 'Multiplication table', example: '24 ÷ 6 = ?' },
+          2: { range: 'Dividing tens', example: '400 ÷ 20 = ?' },
+          3: { range: 'Three-digit ÷ one-digit', example: '126 ÷ 3 = ?' }
+        };
       default:
         return {
           1: { range: 'Single digits', example: 'Level 1' },
@@ -215,7 +227,7 @@ export default function GameShell({ mode }: GameShellProps) {
                 <br />
                 <span className={styles.levelExample}>Example: {levelDescriptions[1].example}</span>
               </div>
-              {(mode === 'addition' || mode === 'subtraction') && (
+              {(mode === 'addition' || mode === 'subtraction' || mode === 'multiplication' || mode === 'division') && (
                 <div className={`${styles.levelFeature} ${styles.levelFeatureHints}`}>
                   ✨ Includes helpful hints!
                 </div>

@@ -1,7 +1,7 @@
 import { useReducer, useCallback } from 'react';
 import { GameState, GameAction, Problem, Result, SessionStats, Level, Mode, Generator } from '../types';
 import { getModeConfig } from '../modes/registry';
-import { saveLastSession } from '../persist/local';
+import { saveLastSession, saveLastMode, saveLastLevel } from '../persist/local';
 
 const TOTAL_PROBLEMS = 10;
 const MAX_ATTEMPTS = 2;
@@ -113,6 +113,10 @@ const gameReducer = (state: GameState, action: GameAction): GameState => {
       const generator = getGenerator(mode);
 
       generator.reset();
+      
+      // Save the current mode and level for the results page
+      saveLastMode(mode);
+      saveLastLevel(level);
       
       const currentProblem = generator.next(level);
       const nextProblem = generator.next(level);

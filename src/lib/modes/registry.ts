@@ -1,9 +1,11 @@
 import React from 'react';
 import { Mode, Problem, Generator } from '../types';
-import { AdditionGenerator, SubtractionGenerator } from '../generators';
+import { AdditionGenerator, SubtractionGenerator, MultiplicationGenerator, DivisionGenerator } from '../generators';
 
 // Lazy import hint components to avoid circular dependencies
 const SubtractionHint = React.lazy(() => import('../../components/game/SubtractionHint'));
+const MultiplicationHint = React.lazy(() => import('../../components/game/MultiplicationHint'));
+const DivisionHint = React.lazy(() => import('../../components/game/DivisionHint'));
 
 export type ModeConfig = {
   id: Mode;
@@ -57,12 +59,15 @@ export const MODE_REGISTRY: Record<Mode, ModeConfig> = {
       integerOnly: true,
     },
   },
-  // Placeholders for future modes
   multiplication: {
     id: 'multiplication',
     displayName: 'Multiplication',
     emoji: '✖️',
-    generator: new AdditionGenerator(), // Temporary placeholder
+    generator: new MultiplicationGenerator(),
+    hints: {
+      eligible: (problem: Problem) => problem.level === 1, // Only for Beginner level
+      component: MultiplicationHint,
+    },
     rules: {
       allowNegatives: false,
       integerOnly: true,
@@ -72,7 +77,11 @@ export const MODE_REGISTRY: Record<Mode, ModeConfig> = {
     id: 'division',
     displayName: 'Division',
     emoji: '➗',
-    generator: new AdditionGenerator(), // Temporary placeholder
+    generator: new DivisionGenerator(),
+    hints: {
+      eligible: (problem: Problem) => problem.level === 1, // Only for Beginner level
+      component: DivisionHint,
+    },
     rules: {
       allowNegatives: false,
       integerOnly: true,
@@ -124,5 +133,5 @@ export const getAvailableModes = (): ModeConfig[] => {
  * Get implemented modes (modes that have real generators, not placeholders)
  */
 export const getImplementedModes = (): ModeConfig[] => {
-  return [MODE_REGISTRY.addition, MODE_REGISTRY.subtraction];
+  return [MODE_REGISTRY.addition, MODE_REGISTRY.subtraction, MODE_REGISTRY.multiplication, MODE_REGISTRY.division];
 };

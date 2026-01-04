@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import Header from '@/components/Header';
 import '../styles/globals.scss';
@@ -10,7 +10,11 @@ export const metadata: Metadata = {
   description: 'Educational math game for children covering addition, subtraction, multiplication, division, and more. Learn math with fun, interactive exercises!',
   keywords: ['math', 'education', 'kids', 'learning', 'games', 'children', 'arithmetic'],
   authors: [{ name: 'MiniMath Team' }],
-  viewport: 'width=device-width, initial-scale=1',
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
   themeColor: [
     { media: '(prefers-color-scheme: light)', color: '#3b82f6' },
     { media: '(prefers-color-scheme: dark)', color: '#1e40af' }

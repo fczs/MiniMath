@@ -47,17 +47,36 @@
   }
 }
 
-// Emoji Tiles Hint
-.emojiTiles {
+// Array-based hint for division
+.arrayHint {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: var(--spacing-4);
 }
 
-.tilesTitle {
-  font-size: $font-size-base;
-  font-weight: $font-weight-semibold;
+.simpleHint {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-4);
+}
+
+.hintText {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
   color: var(--color-text-primary);
+  text-align: center;
+  font-family: var(--font-family-monospace);
+  
+  @include respond(sm) {
+    font-size: $font-size-xl;
+  }
+}
+
+.explanation {
+  font-size: $font-size-base;
+  color: var(--color-text-secondary);
   text-align: center;
   
   @include respond(sm) {
@@ -65,103 +84,70 @@
   }
 }
 
-.tilesContainer {
+.groupsContainer {
   display: flex;
-  align-items: center;
-  gap: var(--spacing-3);
-  justify-content: center;
   flex-wrap: wrap;
-  
-  @include respond(sm) {
-    gap: var(--spacing-4);
-  }
+  gap: var(--spacing-4);
+  justify-content: center;
+  max-width: 100%;
 }
 
-.tilesGroup {
+.group {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--spacing-2);
-}
-
-.tilesGroupLabel {
-  font-family: var(--font-family-monospace);
-  font-size: $font-size-base;
-  font-weight: $font-weight-bold;
-  color: var(--color-text-primary);
+  padding: var(--spacing-2);
+  background: var(--color-surface-hover);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
   
   @include respond(sm) {
-    font-size: $font-size-lg;
+    padding: var(--spacing-3);
   }
 }
 
-.tiles {
+.groupItems {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--spacing-1);
-  max-width: 120px;
+  gap: 3px;
   justify-content: center;
+  max-width: 100px;
   
   @include respond(sm) {
-    max-width: 150px;
-    gap: var(--spacing-2);
+    gap: 4px;
+    max-width: 120px;
   }
 }
 
 .tile {
-  font-size: $font-size-base;
-  line-height: 1;
-  
-  @include respond(sm) {
-    font-size: $font-size-lg;
-  }
-}
-
-.tileCrossed {
-  position: relative;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  opacity: 0.6;
-}
-
-.tileEmoji {
-  font-size: $font-size-base;
+  font-size: 14px;
   line-height: 1;
+  width: 18px;
+  height: 18px;
   
   @include respond(sm) {
-    font-size: $font-size-lg;
+    font-size: 16px;
+    width: 22px;
+    height: 22px;
   }
 }
 
-.crossmark {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 0.8rem;
-  color: var(--color-danger-500);
-  font-weight: $font-weight-bold;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-  
-  @include respond(sm) {
-    font-size: 1rem;
-  }
-}
-
-.minus,
-.equals {
-  font-family: var(--font-family-monospace);
-  font-size: $font-size-xl;
-  font-weight: $font-weight-bold;
+.countPrompt {
+  font-size: $font-size-base;
+  font-weight: $font-weight-medium;
   color: var(--color-primary-600);
+  text-align: center;
+  margin-top: var(--spacing-2);
   
   [data-theme="dark"] & {
     color: var(--color-primary-400);
   }
   
   @include respond(sm) {
-    font-size: $font-size-2xl;
+    font-size: $font-size-lg;
   }
 }
 
@@ -191,4 +177,3 @@
     }
   }
 }
-

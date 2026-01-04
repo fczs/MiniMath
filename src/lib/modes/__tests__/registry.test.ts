@@ -21,6 +21,24 @@ describe('Mode Registry', () => {
       expect(config.generator).toBeDefined();
     });
 
+    it('returns config for multiplication', () => {
+      const config = getModeConfig('multiplication');
+      
+      expect(config.id).toBe('multiplication');
+      expect(config.displayName).toBe('Multiplication');
+      expect(config.emoji).toBe('✖️');
+      expect(config.generator).toBeDefined();
+    });
+
+    it('returns config for division', () => {
+      const config = getModeConfig('division');
+      
+      expect(config.id).toBe('division');
+      expect(config.displayName).toBe('Division');
+      expect(config.emoji).toBe('➗');
+      expect(config.generator).toBeDefined();
+    });
+
     it('throws error for invalid mode', () => {
       expect(() => getModeConfig('invalid' as Mode)).toThrow('Mode configuration not found');
     });
@@ -41,8 +59,8 @@ describe('Mode Registry', () => {
     it('returns only implemented modes', () => {
       const modes = getImplementedModes();
       
-      expect(modes).toHaveLength(2);
-      expect(modes.map(m => m.id)).toEqual(['addition', 'subtraction']);
+      expect(modes).toHaveLength(4);
+      expect(modes.map(m => m.id)).toEqual(['addition', 'subtraction', 'multiplication', 'division']);
     });
   });
 

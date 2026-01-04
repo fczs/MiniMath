@@ -185,7 +185,11 @@
   font-size: $font-size-2xl;
   font-weight: $font-weight-bold;
   color: white;
-  background: linear-gradient(135deg, var(--mode-color, var(--color-fun-green)), var(--color-success-600));
+  background: linear-gradient(
+    135deg, 
+    var(--mode-color, var(--color-fun-green)), 
+    color-mix(in srgb, var(--mode-color, var(--color-fun-green)) 70%, black)
+  );
   border-radius: 50%;
   
   @include respond(sm) {
