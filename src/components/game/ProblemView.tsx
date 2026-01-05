@@ -8,11 +8,9 @@ interface ProblemViewProps {
   gameState: GameState;
   onNext: () => void;
   onSkip: () => void;
-  useKeypad: boolean;
-  onToggleInputMode: (useKeypad: boolean) => void;
 }
 
-export default function ProblemView({ problem, currentIndex, totalProblems, gameState, onNext, onSkip, useKeypad, onToggleInputMode }: ProblemViewProps) {
+export default function ProblemView({ problem, currentIndex, totalProblems, gameState, onNext, onSkip }: ProblemViewProps) {
   const { feedback } = gameState;
   const showNextButton = feedback.type === 'correct' || feedback.type === 'revealed';
 
@@ -53,33 +51,9 @@ export default function ProblemView({ problem, currentIndex, totalProblems, game
         </div>
       </div>
       
-      <div className={`${styles.prompt} ${problem.prompt.length > 14 ? styles.promptCompact : ''}`}>
+      <div className={styles.prompt}>
           {problem.prompt}
       </div>
-      
-      <div className={styles.inputModeToggle}>
-        <label className={styles.toggleLabel} onClick={() => onToggleInputMode(false)}>
-          <span className={`${styles.toggleOption} ${!useKeypad ? styles.active : ''}`}>✏️</span>
-        </label>
-        
-        <div className={styles.toggleSwitch}>
-          <input
-            type="checkbox"
-            checked={useKeypad}
-            onChange={(e) => onToggleInputMode(e.target.checked)}
-            className={styles.toggleInput}
-            id="keypad-mode"
-          />
-          <label htmlFor="keypad-mode" className={styles.switchLabel}>
-            <span className={styles.switchHandle}></span>
-          </label>
-        </div>
-        
-        <label className={styles.toggleLabel} onClick={() => onToggleInputMode(true)}>
-          <span className={`${styles.toggleOption} ${useKeypad ? styles.active : ''}`}>🔢</span>
-        </label>
-      </div>
-   
     </div>
   );
 }

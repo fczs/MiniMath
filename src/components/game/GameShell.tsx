@@ -82,7 +82,7 @@ export default function GameShell({ mode }: GameShellProps) {
         actions.nextProblem();
         setInputValue('');
         setIsHintModalOpen(false);
-      }, 3500);
+      }, 2000);
     }
     
     return clearAutoNextTimer; // Cleanup on unmount or dependency change
@@ -372,6 +372,29 @@ export default function GameShell({ mode }: GameShellProps) {
         {state.currentProblem && (
           <>
             <div className={styles.leftColumn}>
+              <div className={styles.inputModeToggle}>
+                <label className={styles.toggleLabel} onClick={() => setUseKeypad(false)}>
+                  <span className={`${styles.toggleOption} ${!useKeypad ? styles.active : ''}`}>✏️</span>
+                </label>
+                
+                <div className={styles.toggleSwitch}>
+                  <input
+                    type="checkbox"
+                    checked={useKeypad}
+                    onChange={(e) => setUseKeypad(e.target.checked)}
+                    className={styles.toggleInput}
+                    id="keypad-mode"
+                  />
+                  <label htmlFor="keypad-mode" className={styles.switchLabel}>
+                    <span className={styles.switchHandle}></span>
+                  </label>
+                </div>
+                
+                <label className={styles.toggleLabel} onClick={() => setUseKeypad(true)}>
+                  <span className={`${styles.toggleOption} ${useKeypad ? styles.active : ''}`}>🔢</span>
+                </label>
+              </div>
+
               <ProblemView
                 problem={state.currentProblem}
                 currentIndex={state.currentIndex}
@@ -379,8 +402,6 @@ export default function GameShell({ mode }: GameShellProps) {
                 gameState={state}
                 onNext={handleNextProblem}
                 onSkip={handleSkipProblem}
-                useKeypad={useKeypad}
-                onToggleInputMode={setUseKeypad}
               />
               
               <FeedbackBanner
