@@ -278,16 +278,37 @@ export default function AdditionGame() {
         {state.currentProblem && (
           <>
             <div className={styles.leftColumn}>
-                          <ProblemView
-              problem={state.currentProblem}
-              currentIndex={state.currentIndex}
-              totalProblems={state.totalProblems}
-              gameState={state}
-              onNext={handleNextProblem}
-              onSkip={handleSkipProblem}
-              useKeypad={useKeypad}
-              onToggleInputMode={setUseKeypad}
-            />
+              <div className={styles.inputModeToggle}>
+                <label className={styles.toggleLabel} onClick={() => setUseKeypad(false)}>
+                  <span className={`${styles.toggleOption} ${!useKeypad ? styles.active : ''}`}>✏️</span>
+                </label>
+                
+                <div className={styles.toggleSwitch}>
+                  <input
+                    type="checkbox"
+                    checked={useKeypad}
+                    onChange={(e) => setUseKeypad(e.target.checked)}
+                    className={styles.toggleInput}
+                    id="keypad-mode-addition"
+                  />
+                  <label htmlFor="keypad-mode-addition" className={styles.switchLabel}>
+                    <span className={styles.switchHandle}></span>
+                  </label>
+                </div>
+                
+                <label className={styles.toggleLabel} onClick={() => setUseKeypad(true)}>
+                  <span className={`${styles.toggleOption} ${useKeypad ? styles.active : ''}`}>🔢</span>
+                </label>
+              </div>
+
+              <ProblemView
+                problem={state.currentProblem}
+                currentIndex={state.currentIndex}
+                totalProblems={state.totalProblems}
+                gameState={state}
+                onNext={handleNextProblem}
+                onSkip={handleSkipProblem}
+              />
               
               <FeedbackBanner
                 feedback={state.feedback}
