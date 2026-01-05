@@ -39,6 +39,16 @@ describe('Mode Registry', () => {
       expect(config.generator).toBeDefined();
     });
 
+    it('returns config for mixed', () => {
+      const config = getModeConfig('mixed');
+      
+      expect(config.id).toBe('mixed');
+      expect(config.displayName).toBe('Mixed');
+      expect(config.emoji).toBe('🎲');
+      expect(config.generator).toBeDefined();
+      expect(config.hints).toBeUndefined(); // No hints in mixed mode
+    });
+
     it('throws error for invalid mode', () => {
       expect(() => getModeConfig('invalid' as Mode)).toThrow('Mode configuration not found');
     });
@@ -59,8 +69,8 @@ describe('Mode Registry', () => {
     it('returns only implemented modes', () => {
       const modes = getImplementedModes();
       
-      expect(modes).toHaveLength(4);
-      expect(modes.map(m => m.id)).toEqual(['addition', 'subtraction', 'multiplication', 'division']);
+      expect(modes).toHaveLength(6);
+      expect(modes.map(m => m.id)).toEqual(['addition', 'subtraction', 'multiplication', 'division', 'mixed', 'equation']);
     });
   });
 

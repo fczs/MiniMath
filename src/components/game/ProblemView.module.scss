@@ -176,6 +176,26 @@
   }
 }
 
+.promptCompact {
+  font-size: $font-size-base;
+  letter-spacing: -0.03em;
+  
+  @include respond(xs) {
+    font-size: $font-size-lg;
+    letter-spacing: -0.02em;
+  }
+  
+  @include respond(sm) {
+    font-size: $font-size-2xl;
+    letter-spacing: -0.01em;
+  }
+  
+  @include respond(md) {
+    font-size: $font-size-3xl;
+    letter-spacing: 0;
+  }
+}
+
 .inputModeToggle {
   position: absolute;
   bottom: var(--spacing-4);

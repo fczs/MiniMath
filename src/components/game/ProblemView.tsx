@@ -53,7 +53,7 @@ export default function ProblemView({ problem, currentIndex, totalProblems, game
         </div>
       </div>
       
-      <div className={styles.prompt}>
+      <div className={`${styles.prompt} ${problem.prompt.length > 14 ? styles.promptCompact : ''}`}>
           {problem.prompt}
       </div>
       

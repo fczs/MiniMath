@@ -171,6 +171,18 @@ export default function GameShell({ mode }: GameShellProps) {
           2: { range: 'Dividing tens', example: '400 ÷ 20 = ?' },
           3: { range: 'Three-digit ÷ one-digit', example: '126 ÷ 3 = ?' }
         };
+      case 'mixed':
+        return {
+          1: { range: 'Single digits', example: '' },
+          2: { range: 'Two digits & tens', example: '' },
+          3: { range: 'Advanced mix', example: '' }
+        };
+      case 'equation':
+        return {
+          1: { range: 'Addition & subtraction', example: 'x + 5 = 12' },
+          2: { range: 'Multiplication & division', example: 'x × 4 = 20' },
+          3: { range: 'Brackets', example: '3 × (x + 2) = 15' }
+        };
       default:
         return {
           1: { range: 'Single digits', example: 'Level 1' },
@@ -224,8 +236,12 @@ export default function GameShell({ mode }: GameShellProps) {
               <div className={styles.levelTitle}>Beginner</div>
               <div className={styles.levelDescription}>
                 {levelDescriptions[1].range}
-                <br />
-                <span className={styles.levelExample}>Example: {levelDescriptions[1].example}</span>
+                {levelDescriptions[1].example && (
+                  <>
+                    <br />
+                    <span className={styles.levelExample}>Example: {levelDescriptions[1].example}</span>
+                  </>
+                )}
               </div>
               {(mode === 'addition' || mode === 'subtraction' || mode === 'multiplication' || mode === 'division') && (
                 <div className={`${styles.levelFeature} ${styles.levelFeatureHints}`}>
@@ -243,8 +259,12 @@ export default function GameShell({ mode }: GameShellProps) {
               <div className={styles.levelTitle}>Intermediate</div>
               <div className={styles.levelDescription}>
                 {levelDescriptions[2].range}
-                <br />
-                <span className={styles.levelExample}>Example: {levelDescriptions[2].example}</span>
+                {levelDescriptions[2].example && (
+                  <>
+                    <br />
+                    <span className={styles.levelExample}>Example: {levelDescriptions[2].example}</span>
+                  </>
+                )}
               </div>
             </button>
             
@@ -257,8 +277,14 @@ export default function GameShell({ mode }: GameShellProps) {
               <div className={styles.levelTitle}>Advanced</div>
               <div className={styles.levelDescription}>
                 {levelDescriptions[3].range}
-                <br />
-                <span className={styles.levelExample}>Example: {levelDescriptions[3].example}</span>
+                {levelDescriptions[3].example && (
+                  <>
+                    <br />
+                    <span className={styles.levelExample}>
+                      Example:{mode === 'equation' ? <br /> : ' '}{levelDescriptions[3].example}
+                    </span>
+                  </>
+                )}
               </div>
               {mode === 'subtraction' && (
                 <div className={`${styles.levelFeature} ${styles.levelFeatureNegative}`}>
@@ -314,7 +340,8 @@ export default function GameShell({ mode }: GameShellProps) {
   const canShowHint = modeConfig.hints?.eligible(state.currentProblem!) && state.level === 1 && state.currentAttempt > 1;
   
   // Show minus key for Level 3 subtraction only
-  const showMinusKey = mode === 'subtraction' && selectedLevel === 3;
+  // Show minus key for Level 3 subtraction or Level 3 mixed (which may include negative subtraction)
+  const showMinusKey = (mode === 'subtraction' || mode === 'mixed') && selectedLevel === 3;
 
   return (
     <div 

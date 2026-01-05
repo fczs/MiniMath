@@ -1,6 +1,6 @@
 import React from 'react';
 import { Mode, Problem, Generator } from '../types';
-import { AdditionGenerator, SubtractionGenerator, MultiplicationGenerator, DivisionGenerator } from '../generators';
+import { AdditionGenerator, SubtractionGenerator, MultiplicationGenerator, DivisionGenerator, MixedGenerator, EquationGenerator } from '../generators';
 
 // Lazy import hint components to avoid circular dependencies
 const SubtractionHint = React.lazy(() => import('../../components/game/SubtractionHint'));
@@ -91,7 +91,8 @@ export const MODE_REGISTRY: Record<Mode, ModeConfig> = {
     id: 'mixed',
     displayName: 'Mixed',
     emoji: '🎲',
-    generator: new AdditionGenerator(), // Temporary placeholder
+    generator: new MixedGenerator(),
+    // No hints in mixed mode
     rules: {
       allowNegatives: false,
       integerOnly: true,
@@ -101,7 +102,8 @@ export const MODE_REGISTRY: Record<Mode, ModeConfig> = {
     id: 'equation',
     displayName: 'Equations',
     emoji: '⚖️',
-    generator: new AdditionGenerator(), // Temporary placeholder
+    generator: new EquationGenerator(),
+    // No hints in equation mode
     rules: {
       allowNegatives: false,
       integerOnly: true,
@@ -133,5 +135,5 @@ export const getAvailableModes = (): ModeConfig[] => {
  * Get implemented modes (modes that have real generators, not placeholders)
  */
 export const getImplementedModes = (): ModeConfig[] => {
-  return [MODE_REGISTRY.addition, MODE_REGISTRY.subtraction, MODE_REGISTRY.multiplication, MODE_REGISTRY.division];
+  return [MODE_REGISTRY.addition, MODE_REGISTRY.subtraction, MODE_REGISTRY.multiplication, MODE_REGISTRY.division, MODE_REGISTRY.mixed, MODE_REGISTRY.equation];
 };
